@@ -40,7 +40,7 @@ y = [x[1] for x in res1]
 plt.bar(x, y)
 plt.xlabel('CPU Capacity')
 plt.ylabel('Number of Machines')
-if sys.argv[1] == "filtered":
+if len(sys.argv) > 1 and sys.argv[1] == "filtered":
     plt.title('Distribution of Machines according to their CPU Capacity (Filtered Data)')
 else:
     plt.title('Distribution of Machines according to their CPU Capacity')
