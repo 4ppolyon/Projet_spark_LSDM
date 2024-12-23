@@ -47,4 +47,4 @@ To fully answer this question, we plot the distribution of the CPU capacity with
 
 ### Author:
 - Romain Alves
-- Sylvain 
+- Sylvain Joubert
