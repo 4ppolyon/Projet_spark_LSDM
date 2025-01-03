@@ -1,10 +1,7 @@
 # Finds out the index of "name" in the array firstLine
 # returns -1 if it cannot find it
 def find_col(col, name):
-    if name in col:
-        return col.index(name)
-    else:
-        return -1
+    return col.index(name)
 
 # display the first n lines
 def display_x(d, n):
