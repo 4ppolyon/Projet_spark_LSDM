@@ -49,7 +49,17 @@ def q1():
     plt.show()
 
 def q2():
-    print("_" * 100,"\nQuestion 2 :")
+    print("_" * 100, "\nQuestion 2 :")
+    print("What is the percentage of computational power lost due to maintenance?\n")
+
+    start = time.time()
+    res2 = question2(data, col)
+    if res2 == -1:
+        print("An error occurred, please check the data.")
+    else:
+        print("Percentage of computational power lost due to maintenance : ", round(res2, 2), "%")
+    # Temps d'exécution
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
 def q3():
     print("_" * 100,"\nQuestion 3 :")

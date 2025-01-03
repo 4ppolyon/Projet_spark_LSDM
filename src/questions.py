@@ -31,6 +31,39 @@ def check(data, c):
         print("A machine always has the same CPU Capacity")
     print()
 
+# Calculer le downtime et la puissance perdue
+def calculate_downtime(events):
+    begin = 0
+    end = 0
+    tmp = 0
+    latence = 0
+    iter = 0
+    capa = 0
+
+    for timestamp, event_type, cpucapacity in events:
+        if iter == 0:
+            if event_type == 1:
+                begin = 0
+                tmp = timestamp
+            elif event_type == 0:  # add
+                begin = timestamp
+                latence += timestamp
+        else:
+            if event_type == 1:  # remove
+                tmp = timestamp
+            elif event_type == 0:  # add
+                latence += timestamp - tmp
+        end = timestamp
+        capa = max(capa, cpucapacity)
+        iter += 1
+
+    if events:
+        total_time = end - begin
+        total_downtime = latence
+        if total_time > 0:
+            return total_downtime, total_time, capa
+        else:
+            return 0, 0, capa
 
 # What is the distribution of the machines according to their CPU capacity?
 def question1(data, c):
@@ -91,3 +124,42 @@ def question1(data, c):
           "the number of machines for all the CPU capacity and comparing it to the total number of machines.\n")
 
     return d
+
+def question2(data, c):
+    # Indices des colonnes pertinentes
+    timestamp_id = find_col(c, 'timestamp')
+    eventtype_id = find_col(c, 'eventtype')
+    machineID_id = find_col(c, 'machineID')
+    cpucapacity_id = find_col(c, 'cpucapacity')
+
+    # Filtrer les événements pertinents (add = 0, remove = 1)
+    print("Filtering relevant events (add = 0, remove = 1)")
+    events = data.filter(lambda x: x[eventtype_id] in ['0', '1'])
+
+    # Mapper les données pour associer les événements à chaque machine
+    print("Mapping data to associate events to each machine")
+    events = events.map(
+        lambda x: (x[machineID_id], (int(x[timestamp_id]), int(x[eventtype_id]), 0 if x[cpucapacity_id] == '' else float(x[cpucapacity_id]))))
+
+    # Trier par machine et timestamp
+    print("Sorting by machine and timestamp")
+    events = events.groupByKey().mapValues(lambda x: sorted(list(x), key=lambda y: y[0]))
+
+    # Calculating time losses for each machine
+    print("Calculating time losses for each machine")
+    results = events.mapValues(calculate_downtime)
+
+    # Calculating total power lost and total power (multiplying the time lost by the CPU capacity)
+    print("Calculating total power lost and total power (multiplying the time lost by the CPU capacity)")
+    results = results.map(
+        lambda x: (x[0], x[1][0], x[1][1], x[1][2], x[1][0] * x[1][2], x[1][1] * x[1][2]))
+    total_power_lost = results.map(lambda x: x[4]).sum()
+    total_power = results.map(lambda x: x[5]).sum()
+
+    # Calculating the percentage of computational power lost due to maintenance
+    if total_power == 0:
+        print("Erreur : La puissance totale est nulle. Vérifiez les données d'entrée.")
+        return -1
+    percentage = total_power_lost / total_power * 100
+
+    return percentage
