@@ -3,13 +3,24 @@
 
 ## How to run the project
 We assume that you have already installed Spark and that you have a working version of Python 3.10 or higher.
-to run the project, you need to run the following commands **in the root directory of the project**:
+to run all the questions of the project, you need to run the following commands **in the root directory of the project**:
 ```bash
-    python3 ./Qestions.py
+    python3 ./src/main.py
 ```
 If you want to run with a filter on the missing values, you can run the following command:
 ```bash
-    python3 ./Qestions.py filtered
+    python3 ./src/main.py filtered
+```
+If you want to run a specific question, you can run the following command:
+```bash
+    python3 ./src/main.py <questions_number>
+```
+where `<questions_number>` are the number of the questions you want to run (1, 2, etc. separated by a space).
+And you can obviously add the `filtered` argument and mix the arguments.
+
+Example:
+```bash
+    python3 ./src/main.py 1 2 filtered
 ```
 
 ## Description of the data
