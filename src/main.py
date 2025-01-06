@@ -10,7 +10,7 @@ sc.setLogLevel("ERROR")
 # affiliate the col list below
 machine_event_col = ['timestamp', 'machineID', 'eventtype', 'platformID', 'cpucapacity', 'memorycapacity']
 job_event_col = ['timestamp', 'missinginfo', 'jobID', 'eventtype', 'user', 'schedulingclass', 'jobname', 'logicaljobname']
-task_event_col = ['timestamp', 'missinginfo', 'jobID', 'taskindex', 'machineID', 'eventtype', 'username', 'schedulingclass', 'priority', 'cpu', 'ram', 'disk', 'machineconstraint']
+task_event_col = ['timestamp', 'missinginfo', 'jobID', 'task_index', 'machineID', 'event_type', 'username', 'scheduling_class', 'priority', 'cpu', 'ram', 'disk', 'machineconstraint']
 
 def split_data(data):
     data = data.map(lambda x: x.split(','))
@@ -79,6 +79,9 @@ def q3():
 
 def q4():
     print("_" * 100,"\nQuestion 4 :")
+    print("Do tasks with a low scheduling class have a higher probability of being evicted?")
+    data = sc.textFile("./data/task_events/*.csv").map(lambda x: x.split(','))
+    question4(data, task_event_col)
 
 def q5():
     print("_" * 100,"\nQuestion 5 :")
