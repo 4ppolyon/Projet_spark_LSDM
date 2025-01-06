@@ -9,7 +9,7 @@ sc.setLogLevel("ERROR")
 
 # affiliate the col list below
 machine_event_col = ['timestamp', 'machineID', 'eventtype', 'platformID', 'cpucapacity', 'memorycapacity']
-job_event_col = ['timestamp', 'missinginfo', 'jobID', 'eventtype', 'user', 'schedulingclass', 'jobname', 'logicaljobname']
+job_event_col = ['timestamp', 'missinginfo', 'jobID', 'event_type', 'username', 'scheduling_class', 'job_name', 'logicaljobname']
 task_event_col = ['timestamp', 'missinginfo', 'jobID', 'task_index', 'machineID', 'event_type', 'username', 'scheduling_class', 'priority', 'cpu', 'ram', 'disk', 'machineconstraint']
 
 def split_data(data):
@@ -25,9 +25,9 @@ def filter_data(data):
     print("Data Filtered", data.count(), "rows remaining")
     return data
 
-def load_data(name):
+def load_data(name_folder, name_file="*"):
     # concatenate the name with ./data/ and /*.csv
-    data = sc.textFile(f"./data/{name}/*.csv")
+    data = sc.textFile(f"./data/{name_folder}/{name_file}.csv")
     data = split_data(data)
     # if we execute the code with the argument "filtered", we will filter the data to remove the rows with missing values
     if len(sys.argv) > 1 and "filtered" in sys.argv:
@@ -81,32 +81,77 @@ def q2():
 
 def q3():
     print("_" * 100,"\nQuestion 3 :")
-    print("What is the distribution of the number of jobs/tasks per scheduling class?\n")
-    print("Loading job_events")
+    print("What is the distribution of the number of jobs/tasks per scheduling class?\n\n"
+          "Computing Jobs per scheduling class\n"
+          "Loading job_events")
+    TimeJob = time.time()
     data_job = load_data("job_events")
-    print("Loading task_events")
-    data_task = load_data("task_events")
-    print()
-
-    start = time.time()
-    res3 = question3(data_job, data_task, job_event_col, task_event_col)
-
-    jobs = res3[0]
-    tasks = res3[1]
-
-    print("Jobs per scheduling class :" 
+    # data_job = load_data("job_events", "part-00000-of-00500")
+    jobs = question3_job(data_job, job_event_col)
+    TimeJob = round(time.time() - TimeJob, 2)
+    print("\nJobs per scheduling class :" 
             "\n   - Class 0 :", jobs[0][1],"jobs (",jobs[0][2],"% )"
             "\n   - Class 1 :", jobs[1][1],"jobs (",jobs[1][2],"% )"
             "\n   - Class 2 :", jobs[2][1],"jobs (",jobs[2][2],"% )"
-            "\n   - Class 3 :", jobs[3][1],"jobs (",jobs[3][2],"% )\n")
-    print("Tasks per scheduling class :"
+            "\n   - Class 3 :", jobs[3][1],"jobs (",jobs[3][2],"% )"
+            "\n\nExecution Time for Jobs :", TimeJob, "s\n")
+
+    print("Computing Tasks per scheduling class\n"
+          "Loading task_events")
+    TimeTask = time.time()
+    data_task = load_data("task_events")
+    # data_task = load_data("task_events", "part-00000-of-00500")
+    tasks = question3_task(data_task, task_event_col)
+    TimeTask = round(time.time() - TimeTask, 2)
+    print("\nTasks per scheduling class :"
             "\n   - Class 0 :", tasks[0][1],"tasks (",tasks[0][2],"% )"
             "\n   - Class 1 :", tasks[1][1],"tasks (",tasks[1][2],"% )"
             "\n   - Class 2 :", tasks[2][1],"tasks (",tasks[2][2],"% )"
-            "\n   - Class 3 :", tasks[3][1],"tasks (",tasks[3][2],"% )")
+            "\n   - Class 3 :", tasks[3][1],"tasks (",tasks[3][2],"% )"
+            "\n\nExecution Time for Tasks :", TimeTask, "s\n")
 
     # Temps d'exécution
-    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
+    print("Total Execution Time :", round(TimeJob + TimeTask, 2), "s\n")
+
+    # Création des sous-graphiques
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle('Distribution of the number of jobs/tasks per scheduling class')
+
+    # Premier sous-graphe
+    x_jobs = [x[0] for x in jobs]
+    y_jobs = [x[1] for x in jobs]
+    percent_jobs = [x[2] for x in jobs]
+
+    ax1 = axs[0]
+    ax1.bar(x_jobs, y_jobs, color='skyblue')
+    ax1.set_title('Jobs per scheduling class')
+    ax1.set_xlabel('Scheduling Class')
+    ax1.set_ylabel('Number of Jobs (Empirical)', color='blue')
+
+    # Axe secondaire pour le premier sous-graphe
+    ax1_secondary = ax1.twinx()
+    ax1_secondary.plot(x_jobs, percent_jobs, color='orange', marker='o')
+    ax1_secondary.set_ylabel('Percentage (%)', color='orange')
+
+    # Deuxième sous-graphe
+    x_tasks = [x[0] for x in tasks]
+    y_tasks = [x[1] for x in tasks]
+    percent_tasks = [x[2] for x in tasks]
+
+    ax2 = axs[1]
+    ax2.bar(x_tasks, y_tasks, color='lightgreen')
+    ax2.set_title('Tasks per scheduling class')
+    ax2.set_xlabel('Scheduling Class')
+    ax2.set_ylabel('Number of Tasks (Empirical)', color='green')
+
+    # Axe secondaire pour le deuxième sous-graphe
+    ax2_secondary = ax2.twinx()
+    ax2_secondary.plot(x_tasks, percent_tasks, color='red', marker='o')
+    ax2_secondary.set_ylabel('Percentage (%)', color='red')
+
+    # Affichage des graphiques
+    plt.tight_layout(rect=(0.0, 0.03, 1.0, 0.95))
+    plt.show()
 
 
 

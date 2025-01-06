@@ -37,11 +37,11 @@ def calculate_downtime(events):
     end = 0
     tmp = 0
     latence = 0
-    iter = 0
+    i = 0
     capa = 0
 
     for timestamp, event_type, cpucapacity in events:
-        if iter == 0:
+        if i == 0:
             if event_type == 1:
                 begin = 0
                 tmp = timestamp
@@ -55,7 +55,7 @@ def calculate_downtime(events):
                 latence += timestamp - tmp
         end = timestamp
         capa = max(capa, cpucapacity)
-        iter += 1
+        i += 1
 
     if events:
         total_time = end - begin
@@ -78,7 +78,6 @@ def question1(data, c):
               "/!\\ It will take more time to compute and display the name with all the CPU Capacity of each machine /!\\\n")
 
 
-    nb_machines = 0
     print("Computing the distinct number of machines")
     # find the index of machineID
     machineID = find_col(c, 'machineID')
@@ -165,56 +164,66 @@ def question2(data, c):
     return percentage
 
 # Calculate the distribution of jobs/tasks per scheduling class
-def question3(data_job, data_task, job_event_col, task_event_col):
+def question3_job(data_job, job_event_col):
     # Map job events to (scheduling class, 1) and reduce to count per scheduling class
-    scheduling_class_index_job = find_col(job_event_col, 'schedulingclass')
-    job_name_index = find_col(job_event_col, 'jobname')
+    scheduling_class_index_job = find_col(job_event_col, 'scheduling_class')
+    job_name_index = find_col(job_event_col, 'job_name')
 
-    # on va garder qu'une seule ligne par job
-    data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job]))
-    data_job = data_job.distinct()
+    # Keep only one line per job
+    print("Keeping only one line per job")
+    data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job])).distinct()
     job_number = data_job.count()
-
-    # on va compter le nombre de job par scheduling class
-    data_job = data_job.map(lambda x: (x[1], 1))
-    data_job = data_job.reduceByKey(lambda a, b: a + b)
-    data_job = data_job.collect()
-    job_counts = data_job
     print("Number of jobs: ", job_number)
 
-    # Map task events to (scheduling class, 1) and reduce to count per scheduling class
-    scheduling_class_index_task = find_col(task_event_col, 'schedulingclass')
-    job_name_index_task = find_col(task_event_col, 'jobID')
-    task_index = find_col(task_event_col, 'taskindex')
+    # Count the number of jobs per scheduling class
+    print("\nCounting the number of jobs per scheduling class")
+    job_counts = data_job.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
+    print(" - Ended")
 
     # On calcule la répartition des jobs
+    print("Computing the percentage of jobs per scheduling class")
     job_repartition = []
     for scheduling_class, count in job_counts:
         job_repartition.append((scheduling_class, count, round(count / job_number * 100, 2)))
+    print(" - Ended")
+
+    # Sort the data
+    print("Sorting data")
+    job_repartition.sort(key=lambda x: x[0])
+    print(" - Sorted")
+
+    return job_repartition
+
+def question3_task(data_task, task_event_col):
+    # Map task events to (scheduling class, 1) and reduce to count per scheduling class
+    scheduling_class_index_task = find_col(task_event_col, 'scheduling_class')
+    job_name_index_task = find_col(task_event_col, 'jobID')
+    task_index = find_col(task_event_col, 'task_index')
 
     # on va garder qu'une seule ligne par task
-    data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task]))
-    data_task = data_task.distinct()
+    print("Keeping only one line per task")
+    data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task])).distinct()
     task_number = data_task.count()
     print("Number of tasks: ", task_number)
 
     # on va compter le nombre de task par scheduling class
-    data_task = data_task.map(lambda x: (x[1], 1))
-    data_task = data_task.reduceByKey(lambda a, b: a + b)
-    data_task = data_task.collect()
-    task_counts = data_task
+    print("\nCounting the number of tasks per scheduling class")
+    task_counts = data_task.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
+    print(" - Ended")
 
     # On calcule la répartition des tasks
+    print("Computing the percentage of tasks per scheduling class")
     task_repartition = []
     for scheduling_class, count in task_counts:
         task_repartition.append((scheduling_class, count, round(count / task_number * 100, 2)))
+    print(" - Ended")
 
     # Sort the data
-    job_repartition.sort(key=lambda x: x[0])
+    print("Sorting data")
     task_repartition.sort(key=lambda x: x[0])
-    print()
+    print(" - Sorted")
 
-    return job_repartition, task_repartition
+    return task_repartition
 
 def question4(data, cols):
     ### Do tasks with a low scheduling class have a higher probability of being evicted?
