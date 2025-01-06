@@ -216,5 +216,27 @@ def question3(data_job, data_task, job_event_col, task_event_col):
 
     return job_repartition, task_repartition
 
+def question4(data, cols):
+    ### Do tasks with a low scheduling class have a higher probability of being evicted?
 
+    index_sched_class = cols.index('scheduling_class')
+    index_event_type = cols.index('event_type')
 
+    # Il n'est pas explicitement demandé quelle valeur de classe regarder, seulement les classes avec un "low scheduling"
+    # Ici, on choisis les classes 0 et 1 mais on peut facilement changer la sélection dans *low_classes*
+    low_classes = {'0', '1'}
+    low_scheduling_tasks = data.filter(lambda row: row[index_sched_class] in low_classes)
+    other_scheduling_tasks = data.filter(lambda row: row[index_sched_class] not in low_classes)
+
+    #on compte les event types EVICT (2) pour les taches avec un scheduling faible
+    total_low_scheduling_tasks = low_scheduling_tasks.count()
+    low_scheduling_tasks_evicted = low_scheduling_tasks.filter(lambda row : row[index_event_type] == '2').count()
+    p1 = (low_scheduling_tasks_evicted / total_low_scheduling_tasks) * 100
+
+    #on compte les event types EVICT (2) pour les taches avec un scheduling plus élevé
+    total_other_scheduling_tasks = other_scheduling_tasks.count()
+    other_scheduling_tasks_evicted = other_scheduling_tasks.filter(lambda row : row[index_event_type] == '2').count()
+    p2 = (other_scheduling_tasks_evicted / total_other_scheduling_tasks) *100
+
+    print(f'Il y a {p1:.2f}% de chances qu\'une tache avec un scheduling faible et {p2:.2f}% de chances qu\'une tache avec un scheduling plus élevé soit retirées')
+    print(p1>p2)
