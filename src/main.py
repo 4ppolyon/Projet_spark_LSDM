@@ -158,7 +158,7 @@ def q3():
 def q4():
     print("_" * 100,"\nQuestion 4 :")
     print("Do tasks with a low scheduling class have a higher probability of being evicted?")
-    data = sc.textFile("./data/task_events/*.csv").map(lambda x: x.split(','))
+    data = load_data("task_events")
     question4(data, task_event_col)
 
 def q5():
