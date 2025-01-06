@@ -163,3 +163,58 @@ def question2(data, c):
     percentage = total_power_lost / total_power * 100
 
     return percentage
+
+# Calculate the distribution of jobs/tasks per scheduling class
+def question3(data_job, data_task, job_event_col, task_event_col):
+    # Map job events to (scheduling class, 1) and reduce to count per scheduling class
+    scheduling_class_index_job = find_col(job_event_col, 'schedulingclass')
+    job_name_index = find_col(job_event_col, 'jobname')
+
+    # on va garder qu'une seule ligne par job
+    data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job]))
+    data_job = data_job.distinct()
+    job_number = data_job.count()
+
+    # on va compter le nombre de job par scheduling class
+    data_job = data_job.map(lambda x: (x[1], 1))
+    data_job = data_job.reduceByKey(lambda a, b: a + b)
+    data_job = data_job.collect()
+    job_counts = data_job
+    print("Number of jobs: ", job_number)
+
+    # Map task events to (scheduling class, 1) and reduce to count per scheduling class
+    scheduling_class_index_task = find_col(task_event_col, 'schedulingclass')
+    job_name_index_task = find_col(task_event_col, 'jobID')
+    task_index = find_col(task_event_col, 'taskindex')
+
+    # On calcule la répartition des jobs
+    job_repartition = []
+    for scheduling_class, count in job_counts:
+        job_repartition.append((scheduling_class, count, round(count / job_number * 100, 2)))
+
+    # on va garder qu'une seule ligne par task
+    data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task]))
+    data_task = data_task.distinct()
+    task_number = data_task.count()
+    print("Number of tasks: ", task_number)
+
+    # on va compter le nombre de task par scheduling class
+    data_task = data_task.map(lambda x: (x[1], 1))
+    data_task = data_task.reduceByKey(lambda a, b: a + b)
+    data_task = data_task.collect()
+    task_counts = data_task
+
+    # On calcule la répartition des tasks
+    task_repartition = []
+    for scheduling_class, count in task_counts:
+        task_repartition.append((scheduling_class, count, round(count / task_number * 100, 2)))
+
+    # Sort the data
+    job_repartition.sort(key=lambda x: x[0])
+    task_repartition.sort(key=lambda x: x[0])
+    print()
+
+    return job_repartition, task_repartition
+
+
+

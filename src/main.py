@@ -41,9 +41,12 @@ def load_data(name):
 #####################
 
 def q1():
-    data = load_data("machine_events")
     print("_" * 100,"\nQuestion 1 :")
     print("What is the distribution of the machines according to their CPU capacity?\n")
+    print("Loading machine_events")
+    data = load_data("machine_events")
+    print()
+
     start = time.time()
     res1 = question1(data, machine_event_col)
     print("\nExecution Time :", round(time.time() - start, 2), "s\n")
@@ -61,9 +64,11 @@ def q1():
     plt.show()
 
 def q2():
-    data = load_data("machine_events")
     print("_" * 100, "\nQuestion 2 :")
     print("What is the percentage of computational power lost due to maintenance?\n")
+    print("Loading machine_events")
+    data = load_data("machine_events")
+    print()
 
     start = time.time()
     res2 = question2(data, machine_event_col)
@@ -76,6 +81,34 @@ def q2():
 
 def q3():
     print("_" * 100,"\nQuestion 3 :")
+    print("What is the distribution of the number of jobs/tasks per scheduling class?\n")
+    print("Loading job_events")
+    data_job = load_data("job_events")
+    print("Loading task_events")
+    data_task = load_data("task_events")
+    print()
+
+    start = time.time()
+    res3 = question3(data_job, data_task, job_event_col, task_event_col)
+
+    jobs = res3[0]
+    tasks = res3[1]
+
+    print("Jobs per scheduling class :" 
+            "\n   - Class 0 :", jobs[0][1],"jobs (",jobs[0][2],"% )"
+            "\n   - Class 1 :", jobs[1][1],"jobs (",jobs[1][2],"% )"
+            "\n   - Class 2 :", jobs[2][1],"jobs (",jobs[2][2],"% )"
+            "\n   - Class 3 :", jobs[3][1],"jobs (",jobs[3][2],"% )\n")
+    print("Tasks per scheduling class :"
+            "\n   - Class 0 :", tasks[0][1],"tasks (",tasks[0][2],"% )"
+            "\n   - Class 1 :", tasks[1][1],"tasks (",tasks[1][2],"% )"
+            "\n   - Class 2 :", tasks[2][1],"tasks (",tasks[2][2],"% )"
+            "\n   - Class 3 :", tasks[3][1],"tasks (",tasks[3][2],"% )")
+
+    # Temps d'exécution
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
+
+
 
 def q4():
     print("_" * 100,"\nQuestion 4 :")
