@@ -157,20 +157,25 @@ def question2(data, c):
     print("Calculating time losses for each machine")
     results = events.mapValues(calculate_downtime)
 
-    # Calculating total power lost and total power (multiplying the time lost by the CPU capacity)
+    # Collecting results
     print("Calculating total power lost and total power (multiplying the time lost by the CPU capacity)")
-    results = results.map(
-        lambda x: (x[0], x[1][0], x[1][1], x[1][2], x[1][0] * x[1][2], x[1][1] * x[1][2]))
-    total_power_lost = results.map(lambda x: x[4]).sum()
-    total_power = results.map(lambda x: x[5]).sum()
+    total_power_lost, total_power = (
+        # We map the results to extract the power lost and the total power
+        results.map(
+            lambda x: (x[1][0] * x[1][2], x[1][1] * x[1][2])
+        )
+        # We reduce the results to sum the power lost and the total power
+        .reduce(
+            lambda acc, value: (acc[0] + value[0], acc[1] + value[1])
+        )
+    )
 
-    # Calculating the percentage of computational power lost due to maintenance
+    # Calcul du pourcentage
     if total_power == 0:
         print("Error: Total power is 0")
         return -1
-    percentage = total_power_lost / total_power * 100
 
-    return percentage
+    return total_power_lost / total_power * 100
 
 # Calculate the distribution of jobs/tasks per scheduling class
 def question3_job(data_job, job_event_col):
