@@ -4,6 +4,7 @@ What is the distribution of the number of jobs/tasks per scheduling class?
 Computing Jobs per scheduling class
 Loading job_events
 Data Loaded 2012242 rows
+Toutes les classes de scheduling sont définies
 Keeping only one line per job
 Number of jobs:  184001
 
@@ -20,11 +21,12 @@ Jobs per scheduling class :
    - Class 2 : 81485 jobs ( 44.29 % )
    - Class 3 : 1203 jobs ( 0.65 % )
 
-Execution Time for Jobs : 70.99 s
+Execution Time for Jobs : 79.91 s
 
 Computing Tasks per scheduling class
 Loading task_events
 Data Loaded 144648288 rows
+Toutes les classes de scheduling sont définies
 Keeping only one line per task
 Number of tasks:  25424734
 
@@ -41,6 +43,6 @@ Tasks per scheduling class :
    - Class 2 : 612045 tasks ( 2.41 % )
    - Class 3 : 76592 tasks ( 0.3 % )
 
-Execution Time for Tasks : 430.6 s
+Execution Time for Tasks : 508.49 s
 
-Total Execution Time : 501.59 s
+Total Execution Time : 588.4 s

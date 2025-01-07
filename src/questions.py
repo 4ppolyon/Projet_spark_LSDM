@@ -3,7 +3,7 @@ from src.utils import *
 
 # Has a machine always the same cpucapacity?
 # We do not consider machines that do not have a cpucapacity
-def check(data, c):
+def has_same_cpucapacity(data, c):
     print("\nChecking if a machine can have different CPU Capacity")
     # Find the index of cpucapacity
     index = find_col(c, 'cpucapacity')
@@ -65,6 +65,15 @@ def calculate_downtime(events):
         else:
             return 0, 0, capa
 
+def are_undefined_scheduling_classes(data, cols):
+    # Check if there are undefined scheduling classes
+    index_sched_class = cols.index('scheduling_class')
+    undefined_scheduling_classes = data.filter(lambda row: row[index_sched_class] == '').count()
+    if undefined_scheduling_classes > 0:
+        print(f'Il y a {undefined_scheduling_classes} classes de scheduling non définies')
+    else:
+        print('Toutes les classes de scheduling sont définies')
+
 # What is the distribution of the machines according to their CPU capacity?
 def question1(data, c):
     print("Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.\n"
@@ -72,7 +81,7 @@ def question1(data, c):
 
     if len(sys.argv) > 1 and "check" in sys.argv:
         # check if a machine can have different CPU Capacity
-        check(data, c)
+        has_same_cpucapacity(data, c)
     else:
         print("\nWe made a script to check if a machine can have different CPU Capacity, you can run it by using the argument \"check\"\n"
               "/!\\ It will take more time to compute and display the name with all the CPU Capacity of each machine /!\\\n")
@@ -165,6 +174,10 @@ def question2(data, c):
 
 # Calculate the distribution of jobs/tasks per scheduling class
 def question3_job(data_job, job_event_col):
+
+    if len(sys.argv) > 1 and "check" in sys.argv:
+        are_undefined_scheduling_classes(data_job, job_event_col)
+
     # Map job events to (scheduling class, 1) and reduce to count per scheduling class
     scheduling_class_index_job = find_col(job_event_col, 'scheduling_class')
     job_name_index = find_col(job_event_col, 'job_name')
@@ -195,6 +208,10 @@ def question3_job(data_job, job_event_col):
     return job_repartition
 
 def question3_task(data_task, task_event_col):
+
+    if len(sys.argv) > 1 and "check" in sys.argv:
+        are_undefined_scheduling_classes(data_task, task_event_col)
+
     # Map task events to (scheduling class, 1) and reduce to count per scheduling class
     scheduling_class_index_task = find_col(task_event_col, 'scheduling_class')
     job_name_index_task = find_col(task_event_col, 'jobID')
