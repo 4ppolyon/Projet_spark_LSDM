@@ -41,8 +41,15 @@ Example:
 We say here that we consider both filtered and unfiltered data. This is why we have two different histograms for the first question for example.
 
 ### Question 1
-For this question we started by mapping the data as a key-value pair where the key is the cpu capacity and the value is 1 for each machine.
+For this question we started by mapping the data as a key-value pair where the key the machine id and the value is 1.
+We then reduced the data by summing the values for each key. This way we can count the number of machines.
+We then print the number of machines.
+
+After that, we mapped the data as a key-value pair where the key is the machine id and the value is the cpu capacity.
+We suppressed the duplicates pairs by using the `distinct` function.
+Then we mapped the data as a key-value pair where the key is the cpu capacity and the value is 1 for each machine.
 We then reduced the data by summing the values for each key. This way we can count the number of machines for each cpu capacity.
+
 We then print the distribution of the CPU capacity of the machines.
 To fully answer this question, we plot the distribution of the CPU capacity with a histogram.
 
