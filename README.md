@@ -88,6 +88,24 @@ We then print the distribution of the CPU capacity of the machines.
 To fully answer this question, we plot the distribution of the CPU capacity with a histogram.
 
 ### Question 2 : What is the percentage of computational power lost due to maintenance?
+For this question we started by filter the data to keep only the rows where event type is 0 or 1. This way we keep only the rows where the machine is added or removed.
+
+We then mapped the data as a key-value pair where the key is the machine id and the value is the tuple (timestamp, event type, cpu capacity (if the cpu capacity is empty, we put 0)).
+We grouped the data by key and sorted the values by timestamp. This way we can have the events in the right order for each machine.
+After that, we mapped the data the function `compute_lost_power` which will compute the lost power for each machine as follows:
+
+- If the first event is an ADD event, we create checkpoints with the timestamp to calculate time intervals. 
+- If the first event is a REMOVE event, we create the checkpoint at 0 to calculate time intervals. 
+- For each event, we calculate the time interval between a REMOVE event and the next ADD event. It represents the time the machine is down.
+Because we had the time when the machine was added, we can be sure that the machine restarted (which is the criteria on the paper to consider that it is a maintenance).
+- We then calculate the downtime as the sum of the time intervals.
+- We also calculate the total time as the difference between the last timestamp and the first timestamp.
+- Then we return the downtime the total time and the cpu capacity of the machine.
+
+Finally, we compute the total power lost and the total power by mapping the data as a pair of (downtime*cpucapacity, total time*cpucapacity) then we reduce the data by summing the values two by two.
+It gives us the total power lost and the total power.
+We then print the percentage of computational power lost due to maintenance.
+
 ### Question 3 : What is the distribution of the jobs/tasks per scheduling class?
 ## Results
 
@@ -98,6 +116,20 @@ To fully answer this question, we plot the distribution of the CPU capacity with
 ![CPU Capacity Histogram (filtered)](./img/question1f.png)
 
 ### Question 2
+The percentage of computational power lost due to maintenance is 2.19%.
+
+#### Please note that: It is not logic to filter for this question because we need to consider all the add and remove events to calculate the downtime and the missing values are appearing in add events.
+
+**To have a complete version of it:** We need to reconsider the definition of maintenance time.
+We need to define a specific case when a machine has an add event with no cpu capacity then an update event and after a remove event.
+
+#### Examples:
+- Should we (or not) take the time between the add event and the update event as maintenance time?
+- Should we calculate the power of the machine with 0 (or future) cpu capacity between the add event and the update event?
+- Should we ignore the execution if the machine has no cpu capacity at the add event?
+- ...
+
+### Question 3
 
 ### Author:
 - Romain Alves
