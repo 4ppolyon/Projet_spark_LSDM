@@ -74,7 +74,7 @@ There are 500 files in the `task_events` directory. Each file contains the follo
 
 We say here that we consider both filtered and unfiltered data. This is why we have two different histograms for the first question for example.
 
-### Question 1
+### Question 1 : What is the distribution of the machines according to their CPU capacity?
 For this question we started by mapping the data as a key-value pair where the key the machine id and the value is 1.
 We then reduced the data by summing the values for each key. This way we can count the number of machines.
 We then print the number of machines.
@@ -87,6 +87,8 @@ We then reduced the data by summing the values for each key. This way we can cou
 We then print the distribution of the CPU capacity of the machines.
 To fully answer this question, we plot the distribution of the CPU capacity with a histogram.
 
+### Question 2 : What is the percentage of computational power lost due to maintenance?
+### Question 3 : What is the distribution of the jobs/tasks per scheduling class?
 ## Results
 
 ### Question 1
