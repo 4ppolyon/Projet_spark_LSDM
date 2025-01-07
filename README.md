@@ -28,47 +28,47 @@ Example:
 ### machine_events
 There is only one file in the `machine_events` directory. This file contains the following columns:
 
-| Column | Title           | Type        | Mandatory | Description                                                                                   | Example                                      |
-|--------|-----------------|-------------|-----------|-----------------------------------------------------------------------------------------------|----------------------------------------------|
-| 1      | Timestamp       | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.         | 0                                            |
-| 2      | Machine ID      | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                  | 5, 6, etc.                                   |
-| 3      | Event Type      | INTEGER     | YES       | Type d'événement : <br>0: ADD (ajout) <br>1: REMOVE (suppression) <br>2: UPDATE (mise à jour) | 0 (ADD)                                      |
-| 4      | Platform ID     | STRING_HASH | NO        | Identifiant haché de la plateforme, correspondant à la microarchitecture et au chipset.       | HofLGzk1Or/8Ildj2+Lqv0UGGvY82NLoni8+J/Yy0RU= |
-| 5      | CPU Capacity    | FLOAT       | NO        | Capacité normalisée du CPU de la machine (1.0 représente la capacité maximale).               | 0.5 (50% de la capacité maximale)            |
-| 6      | Memory Capacity | FLOAT       | NO        | Capacité normalisée de la mémoire de la machine (1.0 représente la capacité maximale).        | 0.2493 (environ 25% de la capacité maximale) |
+| Column | Title           | Type        | Mandatory | Description                                                                                   |
+|--------|-----------------|-------------|-----------|-----------------------------------------------------------------------------------------------|
+| 1      | Timestamp       | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.         |
+| 2      | Machine ID      | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                  |
+| 3      | Event Type      | INTEGER     | YES       | Type d'événement : <br>0: ADD (ajout) <br>1: REMOVE (suppression) <br>2: UPDATE (mise à jour) |
+| 4      | Platform ID     | STRING_HASH | NO        | Identifiant haché de la plateforme, correspondant à la microarchitecture et au chipset.       |
+| 5      | CPU Capacity    | FLOAT       | NO        | Capacité normalisée du CPU de la machine (1.0 représente la capacité maximale).               |
+| 6      | Memory Capacity | FLOAT       | NO        | Capacité normalisée de la mémoire de la machine (1.0 représente la capacité maximale).        |
 
 ### job_events
 There are 500 files in the `job_events` directory. Each file contains the following columns:
 
-| Column | Title            | Type        | Mandatory | Description                                                                                                                                                       | Example      |
-|--------|------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| 1      | Timestamp        | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             | 0            |
-| 2      | Missing Info     | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |              |
-| 3      | Job ID           | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         | 5, 6, etc.   |
-| 4      | Event Type       | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) | 0 (SUBMIT)   |
-| 5      | User             | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         | 0L6+Gv3Bw6c= |
-| 6      | Scheduling Class | INTEGER     | NO        | Classe de planification de l'emploi : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       | 1 (normale)  |
-| 7      | Job Name         | STRING_HASH | NO        | Nom de l'emploi.                                                                                                                                                  | 0L6+Gv3Bw6c= |
-| 8      | Logical Job Name | STRING_HASH | NO        | Nom logique de l'emploi.                                                                                                                                          | 0L6+Gv3Bw6c= |
+| Column | Title            | Type        | Mandatory | Description                                                                                                                                                       |
+|--------|------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | Timestamp        | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             |
+| 2      | Missing Info     | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |
+| 3      | Job ID           | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         |
+| 4      | Event Type       | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) |
+| 5      | User             | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         |
+| 6      | Scheduling Class | INTEGER     | NO        | Classe de planification de l'emploi : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       |
+| 7      | Job Name         | STRING_HASH | NO        | Nom de l'emploi.                                                                                                                                                  |
+| 8      | Logical Job Name | STRING_HASH | NO        | Nom logique de l'emploi.                                                                                                                                          |
 
 ### task_events
 There are 500 files in the `task_events` directory. Each file contains the following columns:
 
-| Column | Title             | Type        | Mandatory | Description                                                                                                                                                       | Example                                      |
-|--------|-------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|
-| 1      | Timestamp         | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             | 0                                            |
-| 2      | Missing Info      | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |                                              |
-| 3      | Job ID            | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         | 5, 6, etc.                                   |
-| 4      | Task Index        | INTEGER     | YES       | Index de la tâche dans l'emploi.                                                                                                                                  | 0, 1, etc.                                   |
-| 5      | Machine ID        | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                                                                                      | 5, 6, etc.                                   |
-| 6      | Event Type        | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) | 0 (SUBMIT)                                   |
-| 7      | User              | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         | 0L6+Gv3Bw6c=                                 |
-| 8      | Scheduling Class  | INTEGER     | NO        | Classe de planification de la tâche : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       | 1 (normale)                                  |
-| 9      | Priority          | INTEGER     | NO        | Priorité de la tâche.                                                                                                                                             | 0                                            |
-| 10     | CPU Request       | FLOAT       | NO        | Nombre de cœurs de CPU demandés par la tâche.                                                                                                                     | 0.5 (0.5 cœur de CPU)                        |
-| 11     | Memory Request    | FLOAT       | NO        | Quantité de mémoire demandée par la tâche.                                                                                                                        | 0.2493 (environ 25% de la capacité maximale) |
-| 12     | Disk Request      | FLOAT       | NO        | Quantité de disque demandée par la tâche.                                                                                                                         | 0.0 (0.0 disque)                             |
-| 13     | Different Machine | INTEGER     | NO        | Indique si la tâche doit être exécutée sur une machine différente de celle où elle a été soumise : <br>0: non <br>1: oui                                          | 0 (non)                                      |
+| Column | Title             | Type        | Mandatory | Description                                                                                                                                                       |
+|--------|-------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | Timestamp         | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             |
+| 2      | Missing Info      | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |
+| 3      | Job ID            | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         |
+| 4      | Task Index        | INTEGER     | YES       | Index de la tâche dans l'emploi.                                                                                                                                  |
+| 5      | Machine ID        | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                                                                                      |
+| 6      | Event Type        | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) |
+| 7      | User              | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         |
+| 8      | Scheduling Class  | INTEGER     | NO        | Classe de planification de la tâche : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       |
+| 9      | Priority          | INTEGER     | NO        | Priorité de la tâche.                                                                                                                                             |
+| 10     | CPU Request       | FLOAT       | NO        | Nombre de cœurs de CPU demandés par la tâche.                                                                                                                     |
+| 11     | Memory Request    | FLOAT       | NO        | Quantité de mémoire demandée par la tâche.                                                                                                                        |
+| 12     | Disk Request      | FLOAT       | NO        | Quantité de disque demandée par la tâche.                                                                                                                         |
+| 13     | Different Machine | INTEGER     | NO        | Indique si la tâche doit être exécutée sur une machine différente de celle où elle a été soumise : <br>0: non <br>1: oui                                          |
 
 ## Description of the analyses
 
