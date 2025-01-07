@@ -1,0 +1,121 @@
+Question 1 :
+What is the distribution of the machines according to their CPU capacity?
+
+Loading machine_events
+Data Loaded 37780 rows
+
+Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.
+So we decided "if a machine has more than one capacity, the machine is added for each capacity it has."
+
+We made a script to check if a machine can have different CPU Capacity, you can run it by using the argument "check"
+/!\ It will take more time to compute and display the name with all the CPU Capacity of each machine /!\
+
+Computing the distinct number of machines
+Number of machines:  12583
+Computing the distribution of the machines according to their CPU capacity
+
+CPU Capacity Distribution :
+    32 row(s) have no CPU Capacity (0.25%)
+    126 machine(s) can have a CPU Capacity of 0.25 (1.0%)
+    11659 machine(s) can have a CPU Capacity of 0.5 (92.66%)
+    798 machine(s) can have a CPU Capacity of 1 (6.34%)
+
+Note : We think that a machine cannot have different CPU capacity and if the sum of the percentage is not
+equal to 100%, it is because some machines do not have a CPU Capacity. You can see this yourself by summing
+the number of machines for all the CPU capacity and comparing it to the total number of machines.
+
+
+Execution Time : 0.43 s
+
+_______________________________________ CHECK ________________________________________________
+Question 1 :
+What is the distribution of the machines according to their CPU capacity?
+
+Loading machine_events
+Data Loaded 37780 rows
+
+Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.
+So we decided "if a machine has more than one capacity, the machine is added for each capacity it has."
+
+Checking if a machine can have different CPU Capacity
+List of the 32 machines that have different CPU Capacities:
+Machine ID 6264344062 has CPU Capacities: ['', '0.5']
+Machine ID 6274355716 has CPU Capacities: ['', '0.5']
+Machine ID 6280638724 has CPU Capacities: ['', '0.5']
+Machine ID 6280643141 has CPU Capacities: ['', '0.5']
+Machine ID 6282149131 has CPU Capacities: ['', '0.5']
+Machine ID 6285257156 has CPU Capacities: ['', '0.5']
+Machine ID 6289355687 has CPU Capacities: ['', '0.5']
+Machine ID 6289704471 has CPU Capacities: ['', '0.5']
+Machine ID 6296268057 has CPU Capacities: ['', '0.5']
+Machine ID 6296865278 has CPU Capacities: ['', '0.5']
+Machine ID 6301942525 has CPU Capacities: ['', '0.5']
+Machine ID 6315250734 has CPU Capacities: ['', '0.5']
+Machine ID 6316827871 has CPU Capacities: ['', '0.5']
+Machine ID 6322213339 has CPU Capacities: ['', '0.5']
+Machine ID 6335261139 has CPU Capacities: ['', '0.5']
+Machine ID 6344084916 has CPU Capacities: ['', '1']
+Machine ID 6370662053 has CPU Capacities: ['', '0.5']
+Machine ID 6390664602 has CPU Capacities: ['', '0.5']
+Machine ID 6391270721 has CPU Capacities: ['', '0.5']
+Machine ID 6391293459 has CPU Capacities: ['', '0.5']
+Machine ID 6391374318 has CPU Capacities: ['', '0.5']
+Machine ID 6391421427 has CPU Capacities: ['', '0.5']
+Machine ID 6400066596 has CPU Capacities: ['', '0.5']
+Machine ID 6401302061 has CPU Capacities: ['', '0.25']
+Machine ID 6402941427 has CPU Capacities: ['', '0.25']
+Machine ID 6408086842 has CPU Capacities: ['', '0.5']
+Machine ID 6415978528 has CPU Capacities: ['', '0.5']
+Machine ID 6415979192 has CPU Capacities: ['', '0.25']
+Machine ID 6437385645 has CPU Capacities: ['', '0.5']
+Machine ID 6453653899 has CPU Capacities: ['', '1']
+Machine ID 6455072430 has CPU Capacities: ['', '0.5']
+Machine ID 6457070948 has CPU Capacities: ['', '0.5']
+
+Computing the distinct number of machines
+Number of machines:  12583
+Computing the distribution of the machines according to their CPU capacity
+
+CPU Capacity Distribution :
+    32 row(s) have no CPU Capacity (0.25%)
+    126 machine(s) can have a CPU Capacity of 0.25 (1.0%)
+    11659 machine(s) can have a CPU Capacity of 0.5 (92.66%)
+    798 machine(s) can have a CPU Capacity of 1 (6.34%)
+
+Note : We think that a machine cannot have different CPU capacity and if the sum of the percentage is not
+equal to 100%, it is because some machines do not have a CPU Capacity. You can see this yourself by summing
+the number of machines for all the CPU capacity and comparing it to the total number of machines.
+
+
+Execution Time : 0.57 s
+
+_____________________________________ FILTERED _______________________________________________
+Question 1 :
+What is the distribution of the machines according to their CPU capacity?
+
+Loading machine_events
+Data Loaded 37780 rows
+Filtering Data to remove rows with missing values (if you want to keep them, do not use the argument 'filtered')
+Data Filtered 37748 rows remaining
+
+Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.
+So we decided "if a machine has more than one capacity, the machine is added for each capacity it has."
+
+We made a script to check if a machine can have different CPU Capacity, you can run it by using the argument "check"
+/!\ It will take more time to compute and display the name with all the CPU Capacity of each machine /!\
+
+Computing the distinct number of machines
+Number of machines:  12583
+Computing the distribution of the machines according to their CPU capacity
+
+CPU Capacity Distribution :
+    126 machine(s) can have a CPU Capacity of 0.25 (1.0%)
+    11659 machine(s) can have a CPU Capacity of 0.5 (92.66%)
+    798 machine(s) can have a CPU Capacity of 1 (6.34%)
+
+Note : We think that a machine cannot have different CPU capacity and if the sum of the percentage is not
+equal to 100%, it is because some machines do not have a CPU Capacity. You can see this yourself by summing
+the number of machines for all the CPU capacity and comparing it to the total number of machines.
+
+
+Execution Time : 0.46 s
