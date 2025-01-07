@@ -102,7 +102,7 @@ Because we had the time when the machine was added, we can be sure that the mach
 - We also calculate the total time as the difference between the last timestamp and the first timestamp.
 - Then we return the downtime the total time and the cpu capacity of the machine.
 
-Finally, we compute the total power lost and the total power by mapping the data as a pair of (downtime*cpucapacity, total time*cpucapacity) then we reduce the data by summing the values two by two.
+Finally, we compute the total power lost and the total power by mapping the data as a pair of (downtime\*cpucapacity, total time\*cpucapacity) then we reduce the data by summing the values two by two.
 It gives us the total power lost and the total power.
 We then print the percentage of computational power lost due to maintenance.
 
