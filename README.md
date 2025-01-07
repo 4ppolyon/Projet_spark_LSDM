@@ -107,6 +107,25 @@ It gives us the total power lost and the total power.
 We then print the percentage of computational power lost due to maintenance.
 
 ### Question 3 : What is the distribution of the jobs/tasks per scheduling class?
+First, we did two different functions to compute the distribution of the jobs and tasks per scheduling class.
+The only difference between the two functions is on the way of isolate the jobs and tasks.
+For the jobs, we filter the data with the job name and for the tasks, we filter the data with the job id associated with the task_index.
+
+Why did we do that?
+- Because we have the possibility to have a job restart with another job id but the same job name.
+
+Well, now we clarify that we'll describe the job function with annotation for the task function.
+
+- We map the data as a key-value pair where the key is the job name (or the job id + task index) and the value is scheduling class.
+- We suppress the duplicates pairs by using the `distinct` function.
+- We count to keep the number of jobs (tasks) per scheduling class.
+- We compute the repartition of the jobs (tasks) per scheduling class by mapping the data as a key-value pair where the key is the scheduling class and the value is 1.
+- We reduce the data by summing the values for each key. This way we can count the number of jobs (tasks) per scheduling class.
+- We then print the distribution of the jobs (tasks) per scheduling class.
+
+To fully answer this question, we plot the distribution of the jobs and tasks per scheduling class with two histograms.
+We also plot the percentage of the jobs and tasks per scheduling class with curves.
+
 ## Results
 
 ### Question 1
@@ -132,6 +151,13 @@ We need to define a specific case when a machine has an add event with no cpu ca
 - ...
 
 ### Question 3
+The distribution of the jobs and tasks per scheduling class is shown in the following histogram:
+
+![Scheduling Class Histogram](./img/question3.png)
+**Note that :**
+- The bars are the empirical distribution of the jobs and tasks per scheduling class.
+- The curve is the percentage of the jobs and tasks per scheduling class.
+- Points are linked only because it is easier to read the curve than only points. We know that scheduling class is an integer and not a continuous variable.
 
 ### Author:
 - Romain Alves
