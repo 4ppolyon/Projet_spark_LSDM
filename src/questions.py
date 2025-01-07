@@ -31,12 +31,12 @@ def has_same_cpucapacity(data, c):
         print("A machine always has the same CPU Capacity")
     print()
 
-# Calculer le downtime et la puissance perdue
+# Calculate the downtime of a machine and the total downtime
 def calculate_downtime(events):
     begin = 0
     end = 0
     tmp = 0
-    latence = 0
+    latency = 0
     i = 0
     capa = 0
 
@@ -47,19 +47,19 @@ def calculate_downtime(events):
                 tmp = timestamp
             elif event_type == 0:  # add
                 begin = timestamp
-                latence += timestamp
+                latency += timestamp
         else:
             if event_type == 1:  # remove
                 tmp = timestamp
             elif event_type == 0:  # add
-                latence += timestamp - tmp
+                latency += timestamp - tmp
         end = timestamp
         capa = max(capa, cpucapacity)
         i += 1
 
     if events:
         total_time = end - begin
-        total_downtime = latence
+        total_downtime = latency
         if total_time > 0:
             return total_downtime, total_time, capa
         else:
@@ -70,9 +70,9 @@ def are_undefined_scheduling_classes(data, cols):
     index_sched_class = cols.index('scheduling_class')
     undefined_scheduling_classes = data.filter(lambda row: row[index_sched_class] == '').count()
     if undefined_scheduling_classes > 0:
-        print(f'Il y a {undefined_scheduling_classes} classes de scheduling non définies')
+        print(f'There are {undefined_scheduling_classes} undefined scheduling classes')
     else:
-        print('Toutes les classes de scheduling sont définies')
+        print('There are no undefined scheduling classes')
 
 # What is the distribution of the machines according to their CPU capacity?
 def question1(data, c):
@@ -106,7 +106,7 @@ def question1(data, c):
     # find the index of cpucapacity
     cpucapacity = find_col(c, 'cpucapacity')
 
-    # pour chaque machine, on va créer un tuple (cpucapacity, 1) en sachant que on a plusieur ligne pour une machine
+    # for each machine, we will keep the machineID and the cpucapacity
     d = data.map(lambda x: (x[machineID], x[cpucapacity]))
 
     # on va supprimer les doublons
@@ -134,22 +134,22 @@ def question1(data, c):
     return d
 
 def question2(data, c):
-    # Indices des colonnes pertinentes
+    # Find the index of the columns
     timestamp_id = find_col(c, 'timestamp')
     eventtype_id = find_col(c, 'eventtype')
     machineID_id = find_col(c, 'machineID')
     cpucapacity_id = find_col(c, 'cpucapacity')
 
-    # Filtrer les événements pertinents (add = 0, remove = 1)
+    # Filter relevant events (add = 0, remove = 1)
     print("Filtering relevant events (add = 0, remove = 1)")
     events = data.filter(lambda x: x[eventtype_id] in ['0', '1'])
 
-    # Mapper les données pour associer les événements à chaque machine
+    # Mapping data to associate events to each machine
     print("Mapping data to associate events to each machine")
     events = events.map(
         lambda x: (x[machineID_id], (int(x[timestamp_id]), int(x[eventtype_id]), 0 if x[cpucapacity_id] == '' else float(x[cpucapacity_id]))))
 
-    # Trier par machine et timestamp
+    # Grouping events by machine and sorting by timestamp
     print("Sorting by machine and timestamp")
     events = events.groupByKey().mapValues(lambda x: sorted(list(x), key=lambda y: y[0]))
 
@@ -166,7 +166,7 @@ def question2(data, c):
 
     # Calculating the percentage of computational power lost due to maintenance
     if total_power == 0:
-        print("Erreur : La puissance totale est nulle. Vérifiez les données d'entrée.")
+        print("Error: Total power is 0")
         return -1
     percentage = total_power_lost / total_power * 100
 
@@ -193,7 +193,7 @@ def question3_job(data_job, job_event_col):
     job_counts = data_job.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
     print(" - Ended")
 
-    # On calcule la répartition des jobs
+    # Compute the percentage of jobs per scheduling class
     print("Computing the percentage of jobs per scheduling class")
     job_repartition = []
     for scheduling_class, count in job_counts:
@@ -217,18 +217,18 @@ def question3_task(data_task, task_event_col):
     job_name_index_task = find_col(task_event_col, 'jobID')
     task_index = find_col(task_event_col, 'task_index')
 
-    # on va garder qu'une seule ligne par task
+    # Keep only one line per task
     print("Keeping only one line per task")
     data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task])).distinct()
     task_number = data_task.count()
     print("Number of tasks: ", task_number)
 
-    # on va compter le nombre de task par scheduling class
+    # Count the number of tasks per scheduling class
     print("\nCounting the number of tasks per scheduling class")
     task_counts = data_task.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
     print(" - Ended")
 
-    # On calcule la répartition des tasks
+    # Compute the percentage of tasks per scheduling class
     print("Computing the percentage of tasks per scheduling class")
     task_repartition = []
     for scheduling_class, count in task_counts:
@@ -248,21 +248,21 @@ def question4(data, cols):
     index_sched_class = cols.index('scheduling_class')
     index_event_type = cols.index('event_type')
 
-    # Il n'est pas explicitement demandé quelle valeur de classe regarder, seulement les classes avec un "low scheduling"
-    # Ici, on choisis les classes 0 et 1 mais on peut facilement changer la sélection dans *low_classes*
+    # Here, it is not clear what is considered a low scheduling class
+    # We will consider the classes 0 and 1 as low scheduling classes but this can be changed easily by modifying the low_classes set
     low_classes = {'0', '1'}
     low_scheduling_tasks = data.filter(lambda row: row[index_sched_class] in low_classes)
     other_scheduling_tasks = data.filter(lambda row: row[index_sched_class] not in low_classes)
 
-    #on compte les event types EVICT (2) pour les taches avec un scheduling faible
+    # We compute the probability of being evicted for low scheduling tasks
     total_low_scheduling_tasks = low_scheduling_tasks.count()
     low_scheduling_tasks_evicted = low_scheduling_tasks.filter(lambda row : row[index_event_type] == '2').count()
     p1 = (low_scheduling_tasks_evicted / total_low_scheduling_tasks) * 100
 
-    #on compte les event types EVICT (2) pour les taches avec un scheduling plus élevé
+    # We compute the probability of being evicted for other scheduling tasks
     total_other_scheduling_tasks = other_scheduling_tasks.count()
     other_scheduling_tasks_evicted = other_scheduling_tasks.filter(lambda row : row[index_event_type] == '2').count()
     p2 = (other_scheduling_tasks_evicted / total_other_scheduling_tasks) *100
 
-    print(f'Il y a {p1:.2f}% de chances qu\'une tache avec un scheduling faible et {p2:.2f}% de chances qu\'une tache avec un scheduling plus élevé soit retirées')
-    print(p1>p2)
+    print(f'There is {p1:.2f}% chance that a task with a low scheduling and {p2:.2f}% chance that a task with a higher scheduling will be removed')
+    print("It is",p1>p2,"that a task with a low scheduling class has a higher probability of being evicted")
