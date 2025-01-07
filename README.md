@@ -111,8 +111,10 @@ We then print the percentage of computational power lost due to maintenance.
 
 ### Question 1
 - The distribution of the CPU capacity of the machines is shown in the following histogram:
+
 ![CPU Capacity Histogram](./img/question1.png)
 - The distribution of the CPU capacity of the machines (filtered) is shown in the following histogram:
+
 ![CPU Capacity Histogram (filtered)](./img/question1f.png)
 
 ### Question 2
