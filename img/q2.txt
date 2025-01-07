@@ -1,0 +1,14 @@
+Question 2 :
+What is the percentage of computational power lost due to maintenance?
+
+Loading machine_events
+Data Loaded 37780 rows
+
+Filtering relevant events (add = 0, remove = 1)
+Mapping data to associate events to each machine
+Sorting by machine and timestamp
+Calculating time losses for each machine
+Calculating total power lost and total power (multiplying the time lost by the CPU capacity)
+Percentage of computational power lost due to maintenance :  2.19 %
+
+Execution Time : 0.23 s
