@@ -3,6 +3,13 @@ Do tasks with a low scheduling class have a higher probability of being evicted?
 Loading task_events
 Data Loaded 144648288 rows
 There is 4.16% chance that a task with a low scheduling and 2.86% chance that a task with a higher scheduling will be removed
+Results:
+Low scheduling tasks:
+Evicted tasks: 5521450
+Total tasks: 132653902
+Other scheduling tasks:
+Evicted tasks: 342903
+Total tasks: 11994386
 It is True that a task with a low scheduling class has a higher probability of being evicted
 
-Execution Time : 79.42 s
+Execution Time : 73.13 s

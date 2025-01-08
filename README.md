@@ -126,6 +126,15 @@ Well, now we clarify that we'll describe the job function with annotation for th
 To fully answer this question, we plot the distribution of the jobs and tasks per scheduling class with two histograms.
 We also plot the percentage of the jobs and tasks per scheduling class with curves.
 
+### Question 4 : Do tasks with a low scheduling class have a higher probability of being evicted?
+For this question :
+1. We started by filtering the data to keep on one hand low scheduling class tasks and on the other hand other tasks.
+2. We save the number of low scheduling class tasks and the number of other tasks.
+3. We then filter the data to keep only the evicted tasks in the two groups.
+4. We save the number of evicted low scheduling class tasks and the number of evicted other tasks.
+5. We then compute the probability of being evicted for low scheduling class tasks and other tasks.
+6. Finally, we print the probability of being evicted for low scheduling class tasks and other tasks.
+
 ## Results
 
 ### Question 1
@@ -158,6 +167,10 @@ The distribution of the jobs and tasks per scheduling class is shown in the foll
 - The bars are the empirical distribution of the jobs and tasks per scheduling class.
 - The curve is the percentage of the jobs and tasks per scheduling class.
 - Points are linked only because it is easier to read the curve than only points. We know that scheduling class is an integer and not a continuous variable.
+
+### Question 4
+The probability of being evicted for low scheduling class tasks is 4.16% against 2.86% for other tasks.
+So, tasks with a low scheduling class have a higher probability of being evicted.
 
 ### Author:
 - Romain Alves

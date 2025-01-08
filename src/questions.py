@@ -310,4 +310,11 @@ def question4(data, cols):
     p2 = (other_scheduling_tasks_evicted / total_other_scheduling_tasks) *100
 
     print(f'There is {p1:.2f}% chance that a task with a low scheduling and {p2:.2f}% chance that a task with a higher scheduling will be removed')
+    print("Results:"
+          "\nLow scheduling tasks:"
+          "\nEvicted tasks:", low_scheduling_tasks_evicted,
+          "\nTotal tasks:", total_low_scheduling_tasks,
+          "\nOther scheduling tasks:"
+          "\nEvicted tasks:", other_scheduling_tasks_evicted,
+          "\nTotal tasks:", total_other_scheduling_tasks)
     print("It is",p1>p2,"that a task with a low scheduling class has a higher probability of being evicted")
