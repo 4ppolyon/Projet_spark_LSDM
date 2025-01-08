@@ -11,4 +11,4 @@ Calculating time losses for each machine
 Calculating total power lost and total power (multiplying the time lost by the CPU capacity)
 Percentage of computational power lost due to maintenance :  2.19 %
 
-Execution Time : 0.23 s
+Execution Time : 0.11 s

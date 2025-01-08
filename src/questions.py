@@ -183,32 +183,52 @@ def question3_job(data_job, job_event_col):
     if len(sys.argv) > 1 and "check" in sys.argv:
         are_undefined_scheduling_classes(data_job, job_event_col)
 
-    # Map job events to (scheduling class, 1) and reduce to count per scheduling class
-    scheduling_class_index_job = find_col(job_event_col, 'scheduling_class')
-    job_name_index = find_col(job_event_col, 'job_name')
+    # Find indices
+    try:
+        scheduling_class_index_job = find_col(job_event_col, 'scheduling_class')
+        job_name_index = find_col(job_event_col, 'job_name')
+    except Exception as e:
+        print(f"Error finding column indices: {e}")
+        raise
 
     # Keep only one line per job
-    print("Keeping only one line per job")
-    data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job])).distinct()
-    job_number = data_job.count()
-    print("Number of jobs: ", job_number)
+    try:
+        print("Keeping only one line per job")
+        data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job])).distinct()
+        job_number = data_job.count()
+        print("Number of jobs:", job_number)
+    except Exception as e:
+        print(f"Error processing distinct job data: {e}")
+        raise
 
     # Count the number of jobs per scheduling class
-    print("\nCounting the number of jobs per scheduling class")
-    job_counts = data_job.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
-    print(" - Ended")
+    try:
+        print("\nCounting the number of jobs per scheduling class")
+        job_counts = data_job.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
+        print(" - Ended")
+    except Exception as e:
+        print(f"Error counting jobs: {e}")
+        raise
 
     # Compute the percentage of jobs per scheduling class
-    print("Computing the percentage of jobs per scheduling class")
-    job_repartition = []
-    for scheduling_class, count in job_counts:
-        job_repartition.append((scheduling_class, count, round(count / job_number * 100, 2)))
-    print(" - Ended")
+    try:
+        print("Computing the percentage of jobs per scheduling class")
+        job_repartition = []
+        for scheduling_class, count in job_counts:
+            job_repartition.append((scheduling_class, count, round(count / job_number * 100, 2)))
+        print(" - Ended")
+    except Exception as e:
+        print(f"Error computing job percentages: {e}")
+        raise
 
     # Sort the data
-    print("Sorting data")
-    job_repartition.sort(key=lambda x: x[0])
-    print(" - Sorted")
+    try:
+        print("Sorting data")
+        job_repartition.sort(key=lambda x: x[0])
+        print(" - Sorted")
+    except Exception as e:
+        print(f"Error sorting job data: {e}")
+        raise
 
     return job_repartition
 
@@ -217,33 +237,53 @@ def question3_task(data_task, task_event_col):
     if len(sys.argv) > 1 and "check" in sys.argv:
         are_undefined_scheduling_classes(data_task, task_event_col)
 
-    # Map task events to (scheduling class, 1) and reduce to count per scheduling class
-    scheduling_class_index_task = find_col(task_event_col, 'scheduling_class')
-    job_name_index_task = find_col(task_event_col, 'jobID')
-    task_index = find_col(task_event_col, 'task_index')
+    # Find indices
+    try:
+        scheduling_class_index_task = find_col(task_event_col, 'scheduling_class')
+        job_name_index_task = find_col(task_event_col, 'jobID')
+        task_index = find_col(task_event_col, 'task_index')
+    except Exception as e:
+        print(f"Error finding column indices: {e}")
+        raise
 
     # Keep only one line per task
-    print("Keeping only one line per task")
-    data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task])).distinct()
-    task_number = data_task.count()
-    print("Number of tasks: ", task_number)
+    try:
+        print("Keeping only one line per task")
+        data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task])).distinct()
+        task_number = data_task.count()
+        print("Number of tasks: ", task_number)
+    except Exception as e:
+        print(f"Error processing distinct task data: {e}")
+        raise
 
     # Count the number of tasks per scheduling class
-    print("\nCounting the number of tasks per scheduling class")
-    task_counts = data_task.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
-    print(" - Ended")
+    try:
+        print("\nCounting the number of tasks per scheduling class")
+        task_counts = data_task.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b).collect()
+        print(" - Ended")
+    except Exception as e:
+        print(f"Error counting tasks: {e}")
+        raise
 
     # Compute the percentage of tasks per scheduling class
-    print("Computing the percentage of tasks per scheduling class")
-    task_repartition = []
-    for scheduling_class, count in task_counts:
-        task_repartition.append((scheduling_class, count, round(count / task_number * 100, 2)))
-    print(" - Ended")
+    try:
+        print("Computing the percentage of tasks per scheduling class")
+        task_repartition = []
+        for scheduling_class, count in task_counts:
+            task_repartition.append((scheduling_class, count, round(count / task_number * 100, 2)))
+        print(" - Ended")
+    except Exception as e:
+        print(f"Error computing task percentages: {e}")
+        raise
 
     # Sort the data
-    print("Sorting data")
-    task_repartition.sort(key=lambda x: x[0])
-    print(" - Sorted")
+    try:
+        print("Sorting data")
+        task_repartition.sort(key=lambda x: x[0])
+        print(" - Sorted")
+    except Exception as e:
+        print(f"Error sorting task data: {e}")
+        raise
 
     return task_repartition
 

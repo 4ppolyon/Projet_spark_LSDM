@@ -1,10 +1,11 @@
 import time
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
 import matplotlib.pyplot as plt
 from src.questions import *
 
-# start spark with 1 worker thread
-sc = SparkContext("local[20]")
+# Create a Spark Context
+conf = SparkConf().setAppName("Spark Project").setMaster("local[*]") # local[*] to use all the cores of the CPU
+sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 
 # affiliate the col list below
@@ -158,11 +159,26 @@ def q3():
 def q4():
     print("_" * 100,"\nQuestion 4 :")
     print("Do tasks with a low scheduling class have a higher probability of being evicted?")
+    print("Loading task_events")
+    start = time.time()
     data = load_data("task_events")
     question4(data, task_event_col)
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
 def q5():
     print("_" * 100,"\nQuestion 5 :")
+
+def q6():
+    print("_" * 100,"\nQuestion 6 :")
+
+def q7():
+    print("_" * 100,"\nQuestion 7 :")
+
+def custom():
+    print("_" * 100,"\nCustom Question :")
+
+def custom2():
+    print("_" * 100,"\nCustom Question 2 :")
 
 def runall():
     q1()
@@ -170,13 +186,21 @@ def runall():
     q3()
     q4()
     q5()
+    q6()
+    q7()
+    custom()
+    custom2()
 
 questions = {
     "1": q1,
     "2": q2,
     "3": q3,
     "4": q4,
-    "5": q5
+    "5": q5,
+    "6": q6,
+    "7": q7,
+    "custom": custom,
+    "custom2": custom2
 }
 
 if len(sys.argv) > 1 and [x for x in questions if x in sys.argv]:

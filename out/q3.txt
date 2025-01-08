@@ -4,9 +4,8 @@ What is the distribution of the number of jobs/tasks per scheduling class?
 Computing Jobs per scheduling class
 Loading job_events
 Data Loaded 2012242 rows
-There are no undefined scheduling classes
 Keeping only one line per job
-Number of jobs:  184001
+Number of jobs: 184001
 
 Counting the number of jobs per scheduling class
  - Ended
@@ -21,7 +20,56 @@ Jobs per scheduling class :
    - Class 2 : 81485 jobs ( 44.29 % )
    - Class 3 : 1203 jobs ( 0.65 % )
 
-Execution Time for Jobs : 76.31 s
+Execution Time for Jobs : 8.65 s
+
+Computing Tasks per scheduling class
+Loading task_events
+Data Loaded 144648288 rows
+Keeping only one line per task
+Number of tasks:  25424734
+
+Counting the number of tasks per scheduling class
+ - Ended
+Computing the percentage of tasks per scheduling class
+ - Ended
+Sorting data
+ - Sorted
+
+Tasks per scheduling class :
+   - Class 0 : 21304623 tasks ( 83.79 % )
+   - Class 1 : 3431474 tasks ( 13.5 % )
+   - Class 2 : 612045 tasks ( 2.41 % )
+   - Class 3 : 76592 tasks ( 0.3 % )
+
+Execution Time for Tasks : 55.25 s
+
+Total Execution Time : 63.9 s
+
+_______________________________________ CHECK ________________________________________________
+Question 3 :
+What is the distribution of the number of jobs/tasks per scheduling class?
+
+Computing Jobs per scheduling class
+Loading job_events
+Data Loaded 2012242 rows
+There are no undefined scheduling classes
+Keeping only one line per job
+Number of jobs: 184001
+
+Counting the number of jobs per scheduling class
+ - Ended
+Computing the percentage of jobs per scheduling class
+ - Ended
+Sorting data
+ - Sorted
+
+Jobs per scheduling class :
+   - Class 0 : 75902 jobs ( 41.25 % )
+   - Class 1 : 25411 jobs ( 13.81 % )
+   - Class 2 : 81485 jobs ( 44.29 % )
+   - Class 3 : 1203 jobs ( 0.65 % )
+
+Execution Time for Jobs : 9.92 s
 
 Computing Tasks per scheduling class
 Loading task_events
@@ -43,6 +91,6 @@ Tasks per scheduling class :
    - Class 2 : 612045 tasks ( 2.41 % )
    - Class 3 : 76592 tasks ( 0.3 % )
 
-Execution Time for Tasks : 504.82 s
+Execution Time for Tasks : 70.72 s
 
-Total Execution Time : 581.13 s
+Total Execution Time : 80.64 s
