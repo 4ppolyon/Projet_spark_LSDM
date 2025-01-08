@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from src.questions import *
 
 # start spark with 1 worker thread
-sc = SparkContext("local[1]")
+sc = SparkContext("local[20]")
 sc.setLogLevel("ERROR")
 
 # affiliate the col list below
