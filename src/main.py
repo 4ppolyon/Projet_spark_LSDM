@@ -1,4 +1,4 @@
-from pyspark import SparkContext, SparkConf
+from pyspark import SparkContext, SparkConf, RDD
 import matplotlib.pyplot as plt
 from src.questions import *
 
@@ -15,7 +15,7 @@ task_event_col = ['timestamp', 'missinginfo', 'jobID', 'task_index', 'machineID'
 def split_data(data):
     return data.map(lambda x: x.split(','))
 
-def load_data(name_folder, name_file="*"):
+def load_data(name_folder, name_file="*")->RDD[str]:
     # concatenate the name with ./data/ and /*.csv
     data = sc.textFile(f"./data/{name_folder}/{name_file}.csv")
     # print(data.count(), "lines loaded from", name_folder)
@@ -153,6 +153,12 @@ def q4():
 
 def q5():
     print("_" * 100,"\nQuestion 5 :")
+    print("In general, do tasks from the same job run on the same machine?")
+    print("Loading task_events")
+    start = time.time()
+    data = load_data("task_events")
+    question5(data, task_event_col)
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
 def q6():
     print("_" * 100,"\nQuestion 6 :")
