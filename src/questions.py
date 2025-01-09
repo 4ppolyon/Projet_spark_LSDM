@@ -1,4 +1,5 @@
 import sys
+import time
 from src.utils import *
 
 # Has a machine always the same cpucapacity?
@@ -74,6 +75,25 @@ def are_undefined_scheduling_classes(data, cols):
     else:
         print('There are no undefined scheduling classes')
 
+def count_jobs(data, cols):
+    # Find the index of the columns
+    jobID_index = find_col(cols, 'jobID')
+    t1 = time.time()
+    x = data.map(lambda x: x[jobID_index]).distinct().count()
+    print("We check that there are :", x, "jobs")
+    print("Time to count the number of jobs:", time.time() - t1)
+    return x
+
+def count_tasks(data, cols):
+    # Find the index of the columns
+    jobID_index = find_col(cols, 'jobID')
+    task_index = find_col(cols, 'task_index')
+    t1 = time.time()
+    x = data.map(lambda x: (x[jobID_index], x[task_index])).distinct().count()
+    print("We check that there are :", x, "tasks")
+    print("Time to count the number of tasks:", time.time() - t1)
+    return x
+
 # What is the distribution of the machines according to their CPU capacity?
 def question1(data, c):
     print("Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.\n"
@@ -133,6 +153,18 @@ def question1(data, c):
 
     return d
 
+def safe_int(value):
+    try:
+        return int(value)
+    except ValueError:
+        return 0  # or any default value you want to use
+
+def safe_float(value):
+    try:
+        return float(value)
+    except ValueError:
+        return 0.0  # or any default value you want to use
+
 def question2(data, c):
     # Find the index of the columns
     timestamp_id = find_col(c, 'timestamp')
@@ -147,7 +179,7 @@ def question2(data, c):
     # Mapping data to associate events to each machine
     print("Mapping data to associate events to each machine")
     events = events.map(
-        lambda x: (x[machineID_id], (int(x[timestamp_id]), int(x[eventtype_id]), 0 if x[cpucapacity_id] == '' else float(x[cpucapacity_id]))))
+        lambda x: (x[machineID_id], (safe_int(x[timestamp_id]), safe_int(x[eventtype_id]), safe_float(x[cpucapacity_id]))))
 
     # Grouping events by machine and sorting by timestamp
     print("Sorting by machine and timestamp")
@@ -182,21 +214,24 @@ def question3_job(data_job, job_event_col):
 
     if len(sys.argv) > 1 and "check" in sys.argv:
         are_undefined_scheduling_classes(data_job, job_event_col)
+        nbjob = count_jobs(data_job, job_event_col)
 
     # Find indices
     try:
         scheduling_class_index_job = find_col(job_event_col, 'scheduling_class')
-        job_name_index = find_col(job_event_col, 'job_name')
+        job_name_index = find_col(job_event_col, 'jobID')
     except Exception as e:
         print(f"Error finding column indices: {e}")
         raise
 
-    # Keep only one line per job
+    # Keep only one line per job with the scheduling class
     try:
         print("Keeping only one line per job")
         data_job = data_job.map(lambda x: (x[job_name_index], x[scheduling_class_index_job])).distinct()
         job_number = data_job.count()
-        print("Number of jobs:", job_number)
+        print("Number of jobs with scheduling class:", job_number)
+        if len(sys.argv) > 1 and "check" in sys.argv:
+            print("So there are", job_number - nbjob, "jobs which are not unique")
     except Exception as e:
         print(f"Error processing distinct job data: {e}")
         raise
@@ -236,6 +271,7 @@ def question3_task(data_task, task_event_col):
 
     if len(sys.argv) > 1 and "check" in sys.argv:
         are_undefined_scheduling_classes(data_task, task_event_col)
+        nbtask = count_tasks(data_task, task_event_col)
 
     # Find indices
     try:
@@ -251,7 +287,9 @@ def question3_task(data_task, task_event_col):
         print("Keeping only one line per task")
         data_task = data_task.map(lambda x: (x[job_name_index_task] + x[task_index], x[scheduling_class_index_task])).distinct()
         task_number = data_task.count()
-        print("Number of tasks: ", task_number)
+        print("Number of tasks with scheduling class:", task_number)
+        if len(sys.argv) > 1 and "check" in sys.argv:
+            print("So there are", task_number - nbtask, "tasks which are not unique")
     except Exception as e:
         print(f"Error processing distinct task data: {e}")
         raise

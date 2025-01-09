@@ -3,9 +3,8 @@ What is the distribution of the number of jobs/tasks per scheduling class?
 
 Computing Jobs per scheduling class
 Loading job_events
-Data Loaded 2012242 rows
 Keeping only one line per job
-Number of jobs: 184001
+Number of jobs with scheduling class:  672077
 
 Counting the number of jobs per scheduling class
  - Ended
@@ -15,16 +14,15 @@ Sorting data
  - Sorted
 
 Jobs per scheduling class :
-   - Class 0 : 75902 jobs ( 41.25 % )
-   - Class 1 : 25411 jobs ( 13.81 % )
-   - Class 2 : 81485 jobs ( 44.29 % )
-   - Class 3 : 1203 jobs ( 0.65 % )
+   - Class 0 : 257275 jobs ( 38.28 % )
+   - Class 1 : 215110 jobs ( 32.01 % )
+   - Class 2 : 194513 jobs ( 28.94 % )
+   - Class 3 : 5179 jobs ( 0.77 % )
 
-Execution Time for Jobs : 8.65 s
+Execution Time for Jobs : 8.92 s
 
 Computing Tasks per scheduling class
 Loading task_events
-Data Loaded 144648288 rows
 Keeping only one line per task
 Number of tasks:  25424734
 
@@ -41,9 +39,9 @@ Tasks per scheduling class :
    - Class 2 : 612045 tasks ( 2.41 % )
    - Class 3 : 76592 tasks ( 0.3 % )
 
-Execution Time for Tasks : 55.25 s
+Execution Time for Tasks : 40.84 s
 
-Total Execution Time : 63.9 s
+Total Execution Time : 49.76 s
 
 _______________________________________ CHECK ________________________________________________
 Question 3 :
@@ -51,10 +49,12 @@ What is the distribution of the number of jobs/tasks per scheduling class?
 
 Computing Jobs per scheduling class
 Loading job_events
-Data Loaded 2012242 rows
 There are no undefined scheduling classes
+We check that there are : 672074 jobs
+Time to count the number of jobs: 4.36852502822876
 Keeping only one line per job
-Number of jobs: 184001
+Number of jobs with scheduling class: 672077
+So there are 3 jobs which are not unique
 
 Counting the number of jobs per scheduling class
  - Ended
@@ -64,19 +64,21 @@ Sorting data
  - Sorted
 
 Jobs per scheduling class :
-   - Class 0 : 75902 jobs ( 41.25 % )
-   - Class 1 : 25411 jobs ( 13.81 % )
-   - Class 2 : 81485 jobs ( 44.29 % )
-   - Class 3 : 1203 jobs ( 0.65 % )
+   - Class 0 : 257275 jobs ( 38.28 % )
+   - Class 1 : 215110 jobs ( 32.01 % )
+   - Class 2 : 194513 jobs ( 28.94 % )
+   - Class 3 : 5179 jobs ( 0.77 % )
 
-Execution Time for Jobs : 9.92 s
+Execution Time for Jobs : 13.83 s
 
 Computing Tasks per scheduling class
 Loading task_events
-Data Loaded 144648288 rows
 There are no undefined scheduling classes
+We check that there are : 25424731 tasks
+Time to count the number of tasks: 34.19670033454895
 Keeping only one line per task
-Number of tasks:  25424734
+Number of tasks with scheduling class:  25424734
+So there are 3 tasks which are not unique
 
 Counting the number of tasks per scheduling class
  - Ended
@@ -91,6 +93,6 @@ Tasks per scheduling class :
    - Class 2 : 612045 tasks ( 2.41 % )
    - Class 3 : 76592 tasks ( 0.3 % )
 
-Execution Time for Tasks : 70.72 s
+Execution Time for Tasks : 90.7 s
 
-Total Execution Time : 80.64 s
+Total Execution Time : 104.53 s

@@ -107,10 +107,10 @@ We then print the percentage of computational power lost due to maintenance.
 ### Question 3 : What is the distribution of the jobs/tasks per scheduling class?
 First, we did two different functions to compute the distribution of the jobs and tasks per scheduling class.
 The only difference between the two functions is on the way of isolate the jobs and tasks.
-For the jobs, we filter the data with the job name and for the tasks, we filter the data with the job id associated with the task_index.
+For the jobs, we filter the data with the (job name, logical job name or jobID you can find the tree result below) and for the tasks, we filter the data with the job id associated with the task_index.
 
 Why did we do that?
-- Because we have the possibility to have a job restart with another job id but the same job name.
+- Because we have the possibility to have a job restart with another job id but the same job name, and we do not understand the logical job name usage.
 
 Well, now we clarify that we'll describe the job function with annotation for the task function.
 
@@ -157,11 +157,29 @@ We need to define a specific case when a machine has an add event with no cpu ca
 ### Question 3
 The distribution of the jobs and tasks per scheduling class is shown in the following histogram:
 
+With jobs selected by the jobID :
+
+
 ![Scheduling Class Histogram](./img/question3.png)
+
+With jobs selected by the job name :
+
+![Scheduling Class Histogram](./img/question3_vName.png)
+
+With jobs selected by the logical job name :
+
+![Scheduling Class Histogram](./img/question3_vLogical.png)
+
 **Note that :**
 - The bars are the empirical distribution of the jobs and tasks per scheduling class.
 - The curve is the percentage of the jobs and tasks per scheduling class.
 - Points are linked only because it is easier to read the curve than only points. We know that scheduling class is an integer and not a continuous variable.
+- For each version we always have some jobs and tasks with more than one scheduling class (and none of them are empty).
+  - For the jobID version, we have 3 jobs with more than one scheduling class.
+  - For the job name version, we have 30 jobs with more than one scheduling class.
+  - For the logical job name version, we have 50 jobs with more than one scheduling class.
+  - For the task version, we have 3 tasks with more than one scheduling class. 
+  - *You can check that by using the `check` parameter and changing the selection in the code* 
 
 ### Question 4
 The probability of being evicted for low scheduling class tasks is 4.16% against 2.86% for other tasks.

@@ -1,4 +1,3 @@
-import time
 from pyspark import SparkContext, SparkConf
 import matplotlib.pyplot as plt
 from src.questions import *
@@ -14,15 +13,13 @@ job_event_col = ['timestamp', 'missinginfo', 'jobID', 'event_type', 'username', 
 task_event_col = ['timestamp', 'missinginfo', 'jobID', 'task_index', 'machineID', 'event_type', 'username', 'scheduling_class', 'priority', 'cpu', 'ram', 'disk', 'machineconstraint']
 
 def split_data(data):
-    data = data.map(lambda x: x.split(','))
-    print("Data Loaded", data.count(), "rows")
-    return data
+    return data.map(lambda x: x.split(','))
 
 def load_data(name_folder, name_file="*"):
     # concatenate the name with ./data/ and /*.csv
     data = sc.textFile(f"./data/{name_folder}/{name_file}.csv")
-    data = split_data(data)
-    return data
+    # print(data.count(), "lines loaded from", name_folder)
+    return split_data(data)
 
 #####################
 #                   #
