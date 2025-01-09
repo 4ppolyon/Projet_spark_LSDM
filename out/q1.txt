@@ -88,34 +88,3 @@ the number of machines for all the CPU capacity and comparing it to the total nu
 
 
 Execution Time : 0.57 s
-
-_____________________________________ FILTERED _______________________________________________
-Question 1 :
-What is the distribution of the machines according to their CPU capacity?
-
-Loading machine_events
-Data Loaded 37780 rows
-Filtering Data to remove rows with missing values (if you want to keep them, do not use the argument 'filtered')
-Data Filtered 37748 rows remaining
-
-Something to consider: We don't know if it is possible for a machine to have more than one CPU capacity.
-So we decided "if a machine has more than one capacity, the machine is added for each capacity it has."
-
-We made a script to check if a machine can have different CPU Capacity, you can run it by using the argument "check"
-/!\ It will take more time to compute and display the name with all the CPU Capacity of each machine /!\
-
-Computing the distinct number of machines
-Number of machines:  12583
-Computing the distribution of the machines according to their CPU capacity
-
-CPU Capacity Distribution :
-    126 machine(s) can have a CPU Capacity of 0.25 (1.0%)
-    11659 machine(s) can have a CPU Capacity of 0.5 (92.66%)
-    798 machine(s) can have a CPU Capacity of 1 (6.34%)
-
-Note : We think that a machine cannot have different CPU capacity and if the sum of the percentage is not
-equal to 100%, it is because some machines do not have a CPU Capacity. You can see this yourself by summing
-the number of machines for all the CPU capacity and comparing it to the total number of machines.
-
-
-Execution Time : 0.46 s

@@ -18,21 +18,10 @@ def split_data(data):
     print("Data Loaded", data.count(), "rows")
     return data
 
-# split the data
-def filter_data(data):
-    print("Filtering Data to remove rows with missing values (if you want to keep them, do not use the argument 'filtered')")
-    # filter the data to remove the rows with missing values
-    data = data.filter(lambda x: all(c != '' for c in x))
-    print("Data Filtered", data.count(), "rows remaining")
-    return data
-
 def load_data(name_folder, name_file="*"):
     # concatenate the name with ./data/ and /*.csv
     data = sc.textFile(f"./data/{name_folder}/{name_file}.csv")
     data = split_data(data)
-    # if we execute the code with the argument "filtered", we will filter the data to remove the rows with missing values
-    if len(sys.argv) > 1 and "filtered" in sys.argv:
-        data = filter_data(data)
     return data
 
 #####################
