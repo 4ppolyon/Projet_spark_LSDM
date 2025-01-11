@@ -498,7 +498,6 @@ def question6(data_event, data_usage, cols, cols_usage):
     if cpu_correlation >= threshold and ram_correlation >= threshold and disk_correlation >= threshold:
         print("\nAnswer: Yes, the tasks that request the most resources are the ones that consume the most.")
     else:
-        co = 0
         print()
         if cpu_correlation >= threshold and ram_correlation >= threshold:
             print("Answer: Yes, the tasks that request the most CPU and Disk are the ones that consume the most.")
