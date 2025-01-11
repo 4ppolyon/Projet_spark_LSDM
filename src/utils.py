@@ -8,8 +8,10 @@ def display_x(d, n):
     lines = d.take(n)
     for line in lines:
         print(line)
+    print()
 
 # display all the data
 def display_all(d):
     for line in d.collect():
         print(line)
+    print()

@@ -1,0 +1,81 @@
+       ^                                                                                      ^
+      / \                                                                                    / \
+     / | \                                                                                  / | \
+    /  |  \             Réalisé sur un échantillon de toutes les task_events               /  |  \
+   /   .   \           Mais seulement les 100 premiers fichiers de task_usage             /   .   \
+  /_________\                                                                            /_________\
+
+Question 6 :
+Are the tasks that request the more resources the one that consume the more resources?
+Loading task_events
+Loading task_usage
+Filtering the necessary columns from the beginning (USAGE)
+(('17109330', '61'), (0.07239, 0.01054, 0.6484))
+(('17109330', '136'), (0.07178, 0.0103, 2.73))
+(('39308684', '0'), (0.04095, 0.04279, 0.07629))
+(('192299653', '117'), (0.01566, 0.0231, 0.5078))
+(('1389045297', '82'), (0.002857, 0.0002556, 0.02689))
+
+Number of tasks in task_usage: 4686721
+
+Filtering the necessary columns from the beginning (EVENTS)
+(('3418405', '3'), (0.1875, 0.09277, 0.0008287))
+(('840454103', '5'), (0.1514, 0.007767, 3.815e-06))
+(('2902878525', '34'), (0.0531, 0.01605, 0.001242))
+(('2902878525', '101'), (0.0531, 0.01605, 0.001242))
+(('2902878525', '490'), (0.0531, 0.01605, 0.001242))
+
+Number of tasks in task_events: 25424731
+
+Joining the two datasets on jobID and task_index
+(('6267001130', '331'), ((0.0625, 0.0318, 0.0007715), (0.05493, 0.003532, 0.07361)))
+(('6268270068', '85'), ((0.0625, 0.0159, 0.0003862), (0.05579, 0.003056, 0.01746)))
+(('6270241255', '661'), ((0.0625, 0.0318, 0.0007715), (0.0293, 0.001715, 0.005188)))
+(('6276226189', '3777'), ((0.03748, 0.03979, 0.0003862), (0.07837, 0.03485, 0.2773)))
+(('6290981509', '247'), ((0.0625, 0.03107, 0.0001888), (0.05219, 0.003052, 0.02261)))
+(('6298136816', '1540'), ((0.009369, 0.0318, 0.0003862), (0.05981, 0.004166, 0.1404)))
+(('6280823953', '69'), ((0.0125, 0.003109, 0.0003862), (0.05762, 0.003853, 0.0802)))
+(('6287114230', '1520'), ((0.006248, 0.006958, 0.0001154), (0.06219, 0.001505, 0.0528)))
+(('6288455465', '0'), ((0.0, 0.0001554, 0.0), (0.0006428, 0.0, 0.001116)))
+(('5456984290', '414'), ((0.2219, 0.2163, 0.0005064), (0.05621, 0.04102, 1.773)))
+
+Extracting requested and consumed resources
+((0.0625, 0.05493), (0.0318, 0.003532), (0.0007715, 0.07361))
+((0.0625, 0.05579), (0.0159, 0.003056), (0.0003862, 0.01746))
+((0.0625, 0.0293), (0.0318, 0.001715), (0.0007715, 0.005188))
+((0.03748, 0.07837), (0.03979, 0.03485), (0.0003862, 0.2773))
+((0.0625, 0.05219), (0.03107, 0.003052), (0.0001888, 0.02261))
+
+
+Calculating correlation coefficients for cpu
+taking the requested and consumed resources
+Calculating means
+Calculating covariance
+Calculating standard deviations
+Calculating correlation coefficient
+
+Calculating correlation coefficients for ram
+taking the requested and consumed resources
+Calculating means
+Calculating covariance
+Calculating standard deviations
+Calculating correlation coefficient
+
+Calculating correlation coefficients for disk
+taking the requested and consumed resources
+Calculating means
+Calculating covariance
+Calculating standard deviations
+Calculating correlation coefficient
+
+Correlation coefficients:
+  CPU:  19.92%
+  RAM:  65.18%
+  Disk: 1.54%
+
+No strong correlation between the resources requested and consumed
+
+Execution Time : 418.81 s
+
+
+Process finished with exit code 0

@@ -3,7 +3,19 @@ import matplotlib.pyplot as plt
 from src.questions import *
 
 # Create a Spark Context
-conf = SparkConf().setAppName("Spark Project").setMaster("local[*]") # local[*] to use all the cores of the CPU
+conf = (
+    SparkConf()
+    .setAppName("Spark Project")
+    .setMaster("local[*]") # local[*] to use all the cores of the CPU
+    .set("spark.sql.shuffle.partitions", "200")  # Limit shuffle partitions
+    .set("spark.shuffle.file.buffer", "128k")  # Adjust buffer size
+    .set("spark.shuffle.manager", "sort")  # Use the sort shuffle manager
+    .set("spark.local.dir", "/tmp/spark-temp")  # Ensure sufficient temp space
+    .set("spark.shuffle.compress", "true")  # Enable shuffle compression
+    .set("spark.rdd.compress", "true")  # Enable compression for RDDs
+    .set("spark.shuffle.spill.compress", "true")  # Enable spill compression
+    .set("spark.io.compression.codec", "lz4")  # Use LZ4 for better compression
+)
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 
@@ -11,6 +23,7 @@ sc.setLogLevel("ERROR")
 machine_event_col = ['timestamp', 'machineID', 'eventtype', 'platformID', 'cpucapacity', 'memorycapacity']
 job_event_col = ['timestamp', 'missinginfo', 'jobID', 'event_type', 'username', 'scheduling_class', 'job_name', 'logicaljobname']
 task_event_col = ['timestamp', 'missinginfo', 'jobID', 'task_index', 'machineID', 'event_type', 'username', 'scheduling_class', 'priority', 'cpu', 'ram', 'disk', 'machineconstraint']
+task_usage_col = ['start_time', 'end_time', 'jobID', 'task_index', 'machineID', 'cpu_rate', 'canonical_memory', 'assigned_memory', 'unmapped_page_cache', 'total_page_cache', 'max_memory', 'disk_io_time', 'local_disk_space', 'max_disk_space', 'max_cpu_rate', 'max_disk_io_time', 'cpi', 'mai', 'sampling_rate', 'aggregation_type', 'sampled_cpu_usage']
 
 def split_data(data):
     return data.map(lambda x: x.split(','))
@@ -156,6 +169,16 @@ def q5():
 
 def q6():
     print("_" * 100,"\nQuestion 6 :")
+    print("Are the tasks that request the more resources the one that consume the more resources?")
+    print("Loading task_events")
+    start = time.time()
+    data = load_data("task_events")
+    # data = load_data("task_events","part-00000-of-00500")
+    print("Loading task_usage")
+    # data_usage = load_data("task_usage")
+    data_usage = load_data("task_usage","part-000??-of-00500")
+    question6(data, data_usage, task_event_col, task_usage_col)
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
 def q7():
     print("_" * 100,"\nQuestion 7 :")

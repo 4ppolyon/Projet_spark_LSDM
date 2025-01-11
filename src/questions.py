@@ -356,3 +356,122 @@ def question4(data, cols):
           "\nEvicted tasks:", other_scheduling_tasks_evicted,
           "\nTotal tasks:", total_other_scheduling_tasks)
     print("It is",p1>p2,"that a task with a low scheduling class has a higher probability of being evicted")
+
+def calculate_correlation(resource_data):
+    print("taking the requested and consumed resources")
+    requested = resource_data.map(lambda x: x[0])
+    consumed = resource_data.map(lambda x: x[1])
+
+    # Moyennes
+    print("Calculating means")
+    mean_requested = requested.mean()
+    mean_consumed = consumed.mean()
+
+    # Numérateur (covariance)
+    print("Calculating covariance")
+    covariance = resource_data.map(lambda x: (x[0] - mean_requested) * (x[1] - mean_consumed)).sum()
+
+    # Dénominateur (écart-type)
+    print("Calculating standard deviations")
+    std_requested = (requested.map(lambda x: (x - mean_requested) ** 2).sum() ** 0.5)
+    std_consumed = (consumed.map(lambda x: (x - mean_consumed) ** 2).sum() ** 0.5)
+
+    # Coefficient de corrélation
+    print("Calculating correlation coefficient")
+    correlation = covariance / (std_requested * std_consumed) if std_requested > 0 and std_consumed > 0 else 0
+    return correlation
+
+def question6(data_event, data_usage, cols, cols_usage):
+
+    # Indices des colonnes nécessaires
+    tu_job_index = find_col(cols_usage, 'jobID')
+    tu_task_index = find_col(cols_usage, 'task_index')
+    tu_cpu_index = find_col(cols_usage, 'max_cpu_rate')
+    tu_mem_index = find_col(cols_usage, 'max_memory')
+    tu_disk_index = find_col(cols_usage, 'max_disk_space')
+
+    # Filtrer les colonnes nécessaires dès le début
+    print("Filtering the necessary columns from the beginning (USAGE)")
+    data_usage = data_usage.map(
+        lambda x: ((x[tu_job_index], x[tu_task_index]),
+                   (x[tu_cpu_index], x[tu_mem_index], x[tu_disk_index]))
+    ).filter(
+        lambda x: x[1][0] and x[1][1] and x[1][2]  # Enlever les lignes avec des valeurs absentes
+    ).map(
+        lambda x: (x[0], (safe_float(x[1][0]), safe_float(x[1][1]), safe_float(x[1][2])))
+    ).reduceByKey(
+        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Garder les valeurs maximales
+    )
+    display_x(data_usage, 5)
+    print("Number of tasks in task_usage:", data_usage.count())
+    print()
+
+    te_job_index = find_col(cols, 'jobID')
+    te_task_index = find_col(cols, 'task_index')
+    te_cpu_index = find_col(cols, 'cpu')
+    te_mem_index = find_col(cols, 'ram')
+    te_disk_index = find_col(cols, 'disk')
+
+    # Filtrer les colonnes nécessaires dès le début
+    print("Filtering the necessary columns from the beginning (EVENTS)")
+    data_event = data_event.map(
+        lambda x: ((x[te_job_index], x[te_task_index]),
+                   (x[te_cpu_index], x[te_mem_index], x[te_disk_index]))
+    ).filter(
+        lambda x: x[1][0] and x[1][1] and x[1][2]  # Enlever les lignes avec des valeurs absentes
+    ).map(
+        lambda x: (x[0], (safe_float(x[1][0]), safe_float(x[1][1]), safe_float(x[1][2])))
+    ).reduceByKey(
+        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Garder les valeurs maximales
+    )
+    display_x(data_event, 5)
+    print("Number of tasks in task_events:", data_event.count())
+    print()
+
+    print("Joining the two datasets on jobID and task_index")
+    joined = data_event.join(data_usage)
+    display_x(joined, 10)
+
+    print("Extracting requested and consumed resources")
+    # Extraire les ressources demandées et consommées
+    resource_pairs = joined.map(lambda x: (
+        (x[1][0][0], x[1][1][0]),  # CPU requested, CPU consumed
+        (x[1][0][1], x[1][1][1]),  # RAM requested, RAM consumed
+        (x[1][0][2], x[1][1][2])  # Disk requested, Disk consumed
+    ))
+    display_x(resource_pairs, 5)
+
+    print("\nCalculating correlation coefficients for cpu")
+    cpu_correlation = round(calculate_correlation(resource_pairs.map(lambda x: x[0]))*100, 2)
+    print("\nCalculating correlation coefficients for ram")
+    ram_correlation = round(calculate_correlation(resource_pairs.map(lambda x: x[1]))*100, 2)
+    print("\nCalculating correlation coefficients for disk")
+    disk_correlation = round(calculate_correlation(resource_pairs.map(lambda x: x[2]))*100, 2)
+
+    # Afficher les résultats
+    print("\nCorrelation coefficients:")
+    print(f"  CPU:  {cpu_correlation:.2f}%")
+    print(f"  RAM:  {ram_correlation:.2f}%")
+    print(f"  Disk: {disk_correlation:.2f}%")
+
+    # Fournir une réponse finale
+    threshold = 80 # Considérons une corrélation forte si elle est supérieure ou egale à 80%
+    if cpu_correlation >= threshold and ram_correlation >= threshold and disk_correlation >= threshold:
+        print("\nAnswer: Yes, the tasks that request the most resources are the ones that consume the most.")
+    else:
+        co = 0
+        print()
+        if cpu_correlation >= threshold and ram_correlation >= threshold:
+            print("Answer: Yes, the tasks that request the most CPU and Disk are the ones that consume the most.")
+        elif cpu_correlation >= threshold and disk_correlation >= threshold:
+            print("Answer: Yes, the tasks that request the most CPU and RAM are the ones that consume the most.")
+        elif ram_correlation >= threshold and disk_correlation >= threshold:
+            print("Answer: Yes, the tasks that request the most RAM and Disk are the ones that consume the most.")
+        elif cpu_correlation >= threshold:
+            print("Answer: There is a strong correlation between the CPU requested and consumed.\nBut we cannot say the same for the other resources.")
+        elif ram_correlation >= threshold:
+            print("Answer: There is a strong correlation between the RAM requested and consumed.\nBut we cannot say the same for the other resources.")
+        elif disk_correlation >= threshold:
+            print("Answer: There is a strong correlation between the Disk requested and consumed.\nBut we cannot say the same for the other resources.")
+        else:
+            print("No strong correlation between the resources requested and consumed")
