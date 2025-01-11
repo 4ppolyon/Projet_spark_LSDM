@@ -357,6 +357,45 @@ def question4(data, cols):
           "\nTotal tasks:", total_other_scheduling_tasks)
     print("It is",p1>p2,"that a task with a low scheduling class has a higher probability of being evicted")
 
+
+def question5(data, cols):
+    # In general, do tasks from the same job run on the same machine?
+    # We could interpret "In general" in different ways.
+    # We choose to give a threshold, here 75%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively.
+    threshold = 75 # value in percent
+
+    index_jobID = cols.index('jobID')
+    index_machineID = cols.index('machineID')
+
+    # filter out missing data
+    data = data.filter(lambda row: row[index_jobID] != '' and row[index_machineID] != '')
+
+    # map relevant data, this will give a key-value pair (jobID, machineID)
+    job_machine_pairs = data.map(lambda row: (row[index_jobID], row[index_machineID]))
+
+    # we are going to count the different machines for a given job. Since we count the lines for a job, we need to remove duplicates
+    job_machine_pairs = job_machine_pairs.distinct()
+
+    # we group the values by keys, i.e. by jobID.
+    grouped_machines = job_machine_pairs.groupByKey()
+
+    # if one job runs on only one machine, there should be only one value (jobID, machineID) for this job
+    grouped_machines = grouped_machines.mapValues(len)
+
+    # we count how many jobs run on one machine, and how many jobs run on multiple machines.
+    jobs_single_machine = grouped_machines.filter(lambda x: x[1] == 1).count()
+    jobs_multi_machine = grouped_machines.filter(lambda x: x[1] > 1).count()
+
+    total_jobs = jobs_single_machine + jobs_multi_machine
+    proportion_single_machine = (jobs_single_machine / total_jobs) * 100
+    proportion_multi_machine = (jobs_multi_machine / total_jobs) * 100
+
+    print(f"Proportion of jobs running on a single machine: {proportion_single_machine:.2f}%")
+    print(f"Proportion of jobs running on multiple machines: {proportion_multi_machine:.2f}%")
+
+    print("It is",proportion_single_machine>threshold,"that in general, tasks from the same job run on the same machine")
+
+
 def calculate_correlation(resource_data):
     print("taking the requested and consumed resources")
     requested = resource_data.map(lambda x: x[0])
