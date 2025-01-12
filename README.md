@@ -22,6 +22,8 @@ to run all the questions of the project, you need to run the following commands 
 ```bash
     python3 ./src/main.py
 ```
+**It is possible for you to have issues with a "librairy src not found" :** To resolve it just uncomment the line 7 in the file `src/main.py` and run again the same way as before.
+
 If you want to run with more annotation and more information, you can run the following command:
 ```bash
     python3 ./src/main.py check
