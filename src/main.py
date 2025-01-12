@@ -190,7 +190,12 @@ def q7():
     print("_" * 100,"\nQuestion 7 :")
 
 def custom():
-    print("_" * 100,"\nCustom Question :")
+    print("_" * 100,"\nCustom Question : Do some machine cause more failures or task evictions than the average?")
+    print("Loading task_events")
+    start = time.time()
+    data = load_data("task_events")
+    custom_q(data, task_event_col)
+    print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
 def custom2():
     print("_" * 100,"\nCustom Question 2 :")

@@ -513,3 +513,34 @@ def question6(data_event, data_usage, cols, cols_usage):
             print("Answer: There is a strong correlation between the Disk requested and consumed.\nBut we cannot say the same for the other resources.")
         else:
             print("No strong correlation between the resources requested and consumed")
+
+
+def custom_q(data, cols): 
+    
+    index_machine_id = cols.index('machineID')
+    index_event_type = cols.index('event_type')
+    task_events = data.filter(lambda row: row[index_event_type] != '' and row[index_machine_id] != '')
+
+    different_machines = task_events.map(lambda row : row[index_machine_id]).count()
+
+    # We are now counting for each machine how many EVICT or FAIL event have append
+    evict_events = task_events.filter(lambda row: row[index_event_type] in ['3','2'])
+    evict_events_for_machine = evict_events.map(lambda row: (row[index_machine_id], 1))
+    evict_events_for_machine = evict_events_for_machine.reduceByKey(lambda x, y: x + y)
+
+    # We also count for each machine how many event have append in total
+    events_total_for_machine = task_events.map(lambda row: (row[index_machine_id], 1))
+    events_total_for_machine = events_total_for_machine.reduceByKey(lambda x, y: x + y)
+
+    # We join on the Key machineID to form (machineID, (evict_events_for_machine, events_total_for_machine)) 
+    pair_events = events_total_for_machine.join(evict_events_for_machine)
+
+    # For each machine, we divide evict_events_for_machine (the first value) by events_total_for_machine (the second value)
+    # We get the failure rate for each machine
+    failure_rate = pair_events.mapValues(lambda x: x[0] / x[1])
+
+    total_failures = evict_events_for_machine.map(lambda x: x[1]).sum()
+    total_events = events_total_for_machine.map(lambda x: x[1]).sum()
+    average_failure_rate = total_failures / total_events
+    res = failure_rate.filter(lambda row: row[1] > average_failure_rate).collect()
+    print(f"There are {len(res)} machines with an above average failure rate which corresponds to {(len(res) / different_machines) *100:.2f}% of all machines")
