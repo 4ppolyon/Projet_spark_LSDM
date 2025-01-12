@@ -216,7 +216,8 @@ We leaned in our M1 Info Data Base course to filter as much and as soon as possi
 ![Correlation](./img/correlation.png)
 
 - Finally, we print the correlation (in percentage) between the CPU Request and the CPU Max, the Memory Request and the Memory Max, the Disk Request and the Disk Max.
-- 
+
+
 #### How to interpret the correlation?
 - The correlation coefficient r is a unitless value between -1 and 1.
 - The closer r is to zero, the weaker the linear relationship.
@@ -244,7 +245,6 @@ After that, we talk about the failure of the machine.
 We sort the data by the failure ratio and we print the machine with the highest and the lowest ratio failure/task.
 
 Finally, we compute the ratio failure/task for each machine and we print the machine with the highest and the lowest ratio failure/task.
-- 
 
 ## Results
 
@@ -314,11 +314,11 @@ We can notice that there is a small positive correlation between the request and
 
 We obtained the following correlation between the request and the maximum usage:
 
-| Data   | Correlation en % |
-|--------|------------------|
-| CPU    | 22.68            |
-| Memory | 60.28            |
-| Disk   | 1.65             |
+| Data   | Correlation (en %) |
+|--------|--------------------|
+| CPU    | 22.68              |
+| Memory | 60.28              |
+| Disk   | 1.65               |
 
 ### Custom 1
 We obtain a surprising result for the machine with the highest ratio failure/task.
@@ -329,16 +329,18 @@ We obtain a surprising result for the machine with the highest ratio failure/tas
   - We can see a lot of machines with a ratio of 0.000. It means that they have no failure in the filtered data that we used.
 
 #### Here the top 5 of the highest ratio failure/task :
-1. 1436489701 : 2.67647
-2. 317330964 : 0.95699
-3. 4246147567 : 0.8826
-4. 288814348 : 0.76471
-5. 5068065359 : 0.75
+| #   | MachineID  | Ratio   |
+|-----|------------|---------|
+| 1   | 1436489701 | 2.67647 |
+| 2   | 317330964  | 0.95699 |
+| 3   | 4246147567 | 0.8826  |
+| 4   | 288814348  | 0.76471 |
+| 5   | 5068065359 | 0.75    |
 
 ## Table of the execution time
-| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1         | Custom 2 | Total      |
-|----------------|------|------|----------------|--------------------|----------------|--------------------|------------------|----------|------------|
-| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    | 89s (~ 1min 30s) |          | ~ 3h 10min |
+| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1         | Total      |
+|----------------|------|------|----------------|--------------------|----------------|--------------------|------------------|------------|
+| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    | 89s (~ 1min 30s) | ~ 3h 10min |
 
 
 ## Problems encountered
@@ -351,6 +353,13 @@ We obtain a surprising result for the machine with the highest ratio failure/tas
     - Problem Google cloud is so slow to download and uncompress the dataset. (6 hours)
     - Problem to reconnect to the VM : when I write these lines, I am trying to reconnect to the VM for 2 hours. I just wanted to be sure that I've download clusterdata-2011-2 and not clusterdata-2011-1.
       - So the result of the Q6 is maybe not the good one because I can't check it.
+
+## Who did what :
+| Name             | Question                 | README           |
+|------------------|--------------------------|------------------|
+| Romain Alves     | 1, 2, 3, 6 and Custom1   | 90% of the README |
+| Sylvain Joubert  | 4, 5 *and v1 of Custom1* | 10% of the README |
+
 
 ### Author:
 - Romain Alves
