@@ -129,10 +129,10 @@ def question1(data, c):
     # for each machine, we will keep the machineID and the cpucapacity
     d = data.map(lambda x: (x[machineID], x[cpucapacity]))
 
-    # on va supprimer les doublons
+    # remove duplicates
     d = d.distinct()
 
-    # on va compter le nombre de machine par cpucapacity
+    # count the number of machines for each cpucapacity
     d = d.map(lambda x: (x[1], 1)).reduceByKey(lambda x, y: x + y)
 
     # print the data
@@ -202,10 +202,9 @@ def question2(data, c):
         )
     )
 
-    # Calcul du pourcentage
+    # Calculate the percentage of computational power lost due to maintenance
     if total_power == 0:
-        print("Error: Total power is 0")
-        return -1
+        raise Exception("Total power is 0")
 
     return total_power_lost / total_power * 100
 
@@ -401,45 +400,45 @@ def calculate_correlation(resource_data):
     requested = resource_data.map(lambda x: x[0])
     consumed = resource_data.map(lambda x: x[1])
 
-    # Moyennes
+    # Means
     print("Calculating means")
     mean_requested = requested.mean()
     mean_consumed = consumed.mean()
 
-    # Numérateur (covariance)
+    # Covariance (numerator)
     print("Calculating covariance")
     covariance = resource_data.map(lambda x: (x[0] - mean_requested) * (x[1] - mean_consumed)).sum()
 
-    # Dénominateur (écart-type)
+    # Standard deviations (denominator)
     print("Calculating standard deviations")
     std_requested = (requested.map(lambda x: (x - mean_requested) ** 2).sum() ** 0.5)
     std_consumed = (consumed.map(lambda x: (x - mean_consumed) ** 2).sum() ** 0.5)
 
-    # Coefficient de corrélation
+    # Correlation coefficient
     print("Calculating correlation coefficient")
     correlation = covariance / (std_requested * std_consumed) if std_requested > 0 and std_consumed > 0 else 0
     return correlation
 
 def question6(data_event, data_usage, cols, cols_usage):
 
-    # Indices des colonnes nécessaires
+    # Find the indices of the columns
     tu_job_index = find_col(cols_usage, 'jobID')
     tu_task_index = find_col(cols_usage, 'task_index')
     tu_cpu_index = find_col(cols_usage, 'max_cpu_rate')
     tu_mem_index = find_col(cols_usage, 'max_memory')
     tu_disk_index = find_col(cols_usage, 'max_disk_space')
 
-    # Filtrer les colonnes nécessaires dès le début
+    # Filter the necessary columns from the beginning
     print("Filtering the necessary columns from the beginning (USAGE)")
     data_usage = data_usage.map(
         lambda x: ((x[tu_job_index], x[tu_task_index]),
                    (x[tu_cpu_index], x[tu_mem_index], x[tu_disk_index]))
     ).filter(
-        lambda x: x[1][0] and x[1][1] and x[1][2]  # Enlever les lignes avec des valeurs absentes
+        lambda x: x[1][0] and x[1][1] and x[1][2]  # Remove rows with missing values to have a clean and smaller dataset
     ).map(
         lambda x: (x[0], (safe_float(x[1][0]), safe_float(x[1][1]), safe_float(x[1][2])))
     ).reduceByKey(
-        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Garder les valeurs maximales
+        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Keep the maximum values
     )
     display_x(data_usage, 5)
     print("Number of tasks in task_usage:", data_usage.count())
@@ -451,17 +450,17 @@ def question6(data_event, data_usage, cols, cols_usage):
     te_mem_index = find_col(cols, 'ram')
     te_disk_index = find_col(cols, 'disk')
 
-    # Filtrer les colonnes nécessaires dès le début
+    # Filter the necessary columns from the beginning
     print("Filtering the necessary columns from the beginning (EVENTS)")
     data_event = data_event.map(
         lambda x: ((x[te_job_index], x[te_task_index]),
                    (x[te_cpu_index], x[te_mem_index], x[te_disk_index]))
     ).filter(
-        lambda x: x[1][0] and x[1][1] and x[1][2]  # Enlever les lignes avec des valeurs absentes
+        lambda x: x[1][0] and x[1][1] and x[1][2]  # Remove rows with missing values to have a clean and smaller dataset
     ).map(
         lambda x: (x[0], (safe_float(x[1][0]), safe_float(x[1][1]), safe_float(x[1][2])))
     ).reduceByKey(
-        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Garder les valeurs maximales
+        lambda a, b: (max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2]))  # Keep the maximum values
     )
     display_x(data_event, 5)
     print("Number of tasks in task_events:", data_event.count())
@@ -472,7 +471,7 @@ def question6(data_event, data_usage, cols, cols_usage):
     display_x(joined, 10)
 
     print("Extracting requested and consumed resources")
-    # Extraire les ressources demandées et consommées
+    # Extract the requested and consumed resources
     resource_pairs = joined.map(lambda x: (
         (x[1][0][0], x[1][1][0]),  # CPU requested, CPU consumed
         (x[1][0][1], x[1][1][1]),  # RAM requested, RAM consumed
@@ -487,14 +486,14 @@ def question6(data_event, data_usage, cols, cols_usage):
     print("\nCalculating correlation coefficients for disk")
     disk_correlation = round(calculate_correlation(resource_pairs.map(lambda x: x[2]))*100, 2)
 
-    # Afficher les résultats
+    # Print the results
     print("\nCorrelation coefficients:")
     print(f"  CPU:  {cpu_correlation:.2f}%")
     print(f"  RAM:  {ram_correlation:.2f}%")
     print(f"  Disk: {disk_correlation:.2f}%")
 
-    # Fournir une réponse finale
-    threshold = 80 # Considérons une corrélation forte si elle est supérieure ou egale à 80%
+    # Check if there is a strong correlation between the resources requested and consumed
+    threshold = 80 # Consider a strong correlation if the coefficient is above 80%
     if cpu_correlation >= threshold and ram_correlation >= threshold and disk_correlation >= threshold:
         print("\nAnswer: Yes, the tasks that request the most resources are the ones that consume the most.")
     else:
