@@ -133,6 +133,18 @@ For this question :
 5. We then compute the probability of being evicted for low scheduling class tasks and other tasks.
 6. Finally, we print the probability of being evicted for low scheduling class tasks and other tasks.
 
+### Question 5 : In general, do tasks from the same job run on the same machine?
+First, we want to fix the meaning behind "In general" that we are going to use for this question. 
+We choose to give a threshold, here 75%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively. We can modify *threshold* in the code.
+    
+On task_events, after removing the missing data : 
+- We make a key-value pair (jobID, machineID)
+- We remove the duplicates, meaning we keep only one instance when a jobID is on the same machine several times 
+- We group the values by keys, i.e. by jobID. The result is that each job is associated with a 'list' of different machines.
+- We count the length of the machines for each job. If the length is greater than one, then tasks from this job don't run on all on the same machine. 
+- Finally we count the number of jobs that satisfy this property and we give our answer. 
+
+
 ## Results
 
 ### Question 1
@@ -184,6 +196,9 @@ With jobs selected by the logical job name :
 ### Question 4
 The probability of being evicted for low scheduling class tasks is 4.16% against 2.86% for other tasks.
 So, tasks with a low scheduling class have a higher probability of being evicted.
+
+
+### Question 5 
 
 ### Author:
 - Romain Alves
