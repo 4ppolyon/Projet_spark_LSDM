@@ -1,0 +1,20 @@
+Custom Question : Which machine has the highest/lowest ratio failure/task?
+Loading task_events
+
+
+Top 5 machines with the highest failure rates:
+Machine 1436489701: Number of failures = 182, Number of tasks = 68, Failure rate = 2.67647
+Machine 317330964: Number of failures = 89, Number of tasks = 93, Failure rate = 0.95699
+Machine 4246147567: Number of failures = 624, Number of tasks = 707, Failure rate = 0.8826
+Machine 288814348: Number of failures = 13, Number of tasks = 17, Failure rate = 0.76471
+Machine 5068065359: Number of failures = 18, Number of tasks = 24, Failure rate = 0.75
+
+
+Top 5 machines with the lowest failure rates:
+Machine 1436491597: Number of failures = 0, Number of tasks = 1, Failure rate = 0.0
+Machine 2850408: Number of failures = 0, Number of tasks = 8, Failure rate = 0.0
+Machine 294935191: Number of failures = 0, Number of tasks = 1, Failure rate = 0.0
+Machine 4304800783: Number of failures = 0, Number of tasks = 6, Failure rate = 0.0
+Machine 4284920557: Number of failures = 0, Number of tasks = 1, Failure rate = 0.0
+
+Execution Time : 89.73 s

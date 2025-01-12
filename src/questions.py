@@ -514,32 +514,52 @@ def question6(data_event, data_usage, cols, cols_usage):
             print("No strong correlation between the resources requested and consumed")
 
 
-def custom_q(data, cols): 
-    
+def custom1(data, cols):
+    # Find the index of the columns
     index_machine_id = cols.index('machineID')
     index_event_type = cols.index('event_type')
-    task_events = data.filter(lambda row: row[index_event_type] != '' and row[index_machine_id] != '')
+    jobID_index = find_col(cols, 'jobID')
+    task_index = find_col(cols, 'task_index')
 
-    different_machines = task_events.map(lambda row : row[index_machine_id]).count()
+    data = data.filter(lambda x: x[index_machine_id] != '' and x[jobID_index] != '' and x[task_index] != '')
 
-    # We are now counting for each machine how many EVICT or FAIL event have append
-    evict_events = task_events.filter(lambda row: row[index_event_type] in ['3','2'])
-    evict_events_for_machine = evict_events.map(lambda row: (row[index_machine_id], 1))
-    evict_events_for_machine = evict_events_for_machine.reduceByKey(lambda x, y: x + y)
+    # Calculate the total number of distinct tasks per machine
+    tasks_per_machine = (data.map(lambda x: ((x[index_machine_id], x[jobID_index], x[task_index]), 1))
+                         .distinct()
+                         .map(lambda x: (x[0][0], 1))
+                         .reduceByKey(lambda a, b: a + b))
 
-    # We also count for each machine how many event have append in total
-    events_total_for_machine = task_events.map(lambda row: (row[index_machine_id], 1))
-    events_total_for_machine = events_total_for_machine.reduceByKey(lambda x, y: x + y)
+    # Filter out rows with missing data for the columns machineID and event_type, map to (machineID, event_type)
+    data = data.filter(lambda row: row[index_event_type] != '' and row[index_machine_id] != '')
 
-    # We join on the Key machineID to form (machineID, (evict_events_for_machine, events_total_for_machine)) 
-    pair_events = events_total_for_machine.join(evict_events_for_machine)
+    # Count the number of FAIL events (event_type = '2') for each machine
+    fail_events = data.filter(lambda row: row[index_event_type] == '2')
+    fail_counts = fail_events.map(lambda row: (row[index_machine_id], 1)).reduceByKey(lambda a, b: a + b)
 
-    # For each machine, we divide evict_events_for_machine (the first value) by events_total_for_machine (the second value)
-    # We get the failure rate for each machine
-    failure_rate = pair_events.mapValues(lambda x: x[0] / x[1])
+    # Join the fail counts with the tasks per machine
+    fail_rate_data = tasks_per_machine.leftOuterJoin(fail_counts)
 
-    total_failures = evict_events_for_machine.map(lambda x: x[1]).sum()
-    total_events = events_total_for_machine.map(lambda x: x[1]).sum()
-    average_failure_rate = total_failures / total_events
-    res = failure_rate.filter(lambda row: row[1] > average_failure_rate).collect()
-    print(f"There are {len(res)} machines with an above average failure rate which corresponds to {(len(res) / different_machines) *100:.2f}% of all machines")
+    # Replace None with 0 for machines with no fails and calculate the failure rate
+    fail_rate_data = fail_rate_data.map(lambda row: (
+    row[0], row[1][1] if row[1][1] else 0, row[1][0], round(((row[1][1] if row[1][1] else 0) / row[1][0]), 5)))
+
+    # Sort the data by the failure rate in descending order
+    fail_rate_data = fail_rate_data.sortBy(lambda row: row[3], ascending=False)
+
+    # Take the top 5 machines with the highest failure rates
+    top_machines = fail_rate_data.take(5)
+
+    # Take the top 5 machines with the worst failure rates
+    worst_machines = fail_rate_data.takeOrdered(5, key=lambda row: row[3])
+
+    print("\n")
+    # Print the results
+    print("Top 5 machines with the highest failure rates:")
+    for machine_id, nb_failures, nb_tasks, failure_rate in top_machines:
+        print(
+            f"Machine {machine_id}: Number of failures = {nb_failures}, Number of tasks = {nb_tasks}, Failure rate = {failure_rate}")
+    print("\n")
+    print("Top 5 machines with the lowest failure rates:")
+    for machine_id, nb_failures, nb_tasks, failure_rate in worst_machines:
+        print(
+            f"Machine {machine_id}: Number of failures = {nb_failures}, Number of tasks = {nb_tasks}, Failure rate = {failure_rate}")
