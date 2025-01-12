@@ -310,6 +310,8 @@ We obtained the following correlation between the request and the maximum usage:
     - Problem of disk space because it is 40GB when it is compressed and 200GB when it is uncompressed. So i uninstall the project and reinstall it on a bigger disk added manually (4 hours).
     - Problem Google cloud is so slow to download and uncompress the dataset. (6 hours)
     - Problem to reconnect to the VM : when I write theses lines, I am trying to reconnect to the VM for 2 hours.
+    - Problem to reconnect to the VM : when I write theses lines, I am trying to reconnect to the VM for 2 hours. I just wanted to be sure that I've download clusterdata-2011-2 and not clusterdata-2011-1.
+      - So the result of the Q6 is maybe not the good one because I can't check it.
 
 ### Author:
 - Romain Alves
