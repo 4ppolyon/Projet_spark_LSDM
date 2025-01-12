@@ -301,6 +301,16 @@ We obtained the following correlation between the request and the maximum usage:
 | Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    |          |          | ~ 3h 5min |
 
 
+### Problems encountered
+- The dataset is HUGE, and we can't load it all in memory. (2 days of work to decide to move the project on Google cloud platform)
+- Google cloud platform is not easy to use when you never used it before. (1 day of work to understand how to use it)
+  - To be honest we had :
+    - Problem to understand how to access to the service because there is so many random message everywhere.
+    - Problem to understand that we need to create a VM to use the service. And not install the project on the session.
+    - Problem of disk space because it is 40GB when it is compressed and 200GB when it is uncompressed. So i uninstall the project and reinstall it on a bigger disk added manually (4 hours).
+    - Problem Google cloud is so slow to download and uncompress the dataset. (6 hours)
+    - Problem to reconnect to the VM : when I write theses lines, I am trying to reconnect to the VM for 2 hours.
+
 ### Author:
 - Romain Alves
 - Sylvain Joubert
