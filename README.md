@@ -2,6 +2,21 @@
 # Spark Project M2 MOSIG
 
 ## How to run the project
+To download the dataset, you need to run the following command **in the root directory of the project**:
+```bash
+    gsutil -m cp gs://clusterdata-2011-2/machine_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/job_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/task_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/task_usage/ ./data/
+```
+This will download the dataset in the `data` directory. To un compress the files, you need to run the following command **in the root directory of the project**:
+```bash
+    gunzip ./data/machine_events/*
+    gunzip ./data/job_events/*
+    gunzip ./data/task_events/*
+    gunzip ./data/task_usage/*
+```
+
 We assume that you have already installed Spark, matplotlib and that you have a working version of Python 3.10 or higher.
 to run all the questions of the project, you need to run the following commands **in the root directory of the project**:
 ```bash
@@ -281,9 +296,9 @@ We obtained the following correlation between the request and the maximum usage:
 | Disk   | 1.65             |
 
 ### Table of the execution time
-| Question       | 1    | 2    | 3               | 4                  | 5               | 6                  | Custom 1 | Custom 2 | Total |
-|----------------|------|------|-----------------|--------------------|-----------------|--------------------|----------|----------|-------|
-| Execution time | 0s   | 0s   | 49s ( > 1min )  | 73s ( > 1min 30s ) | 43s ( > 1min )  | 10336s ( ~ 3h )    |          |          |       |
+| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1 | Custom 2 | Total     |
+|----------------|------|------|----------------|--------------------|----------------|--------------------|----------|----------|-----------|
+| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    |          |          | ~ 3h 5min |
 
 
 ### Author:
