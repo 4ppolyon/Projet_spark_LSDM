@@ -135,7 +135,7 @@ For this question :
 
 ### Question 5 : In general, do tasks from the same job run on the same machine?
 First, we want to fix the meaning behind "In general" that we are going to use for this question. 
-We choose to give a threshold, here 75%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively. We can modify *threshold* in the code.
+We choose to give a threshold, here 65%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively. We can modify *threshold* in the code.
     
 On task_events, after removing the missing data : 
 - We make a key-value pair (jobID, machineID)
@@ -199,6 +199,15 @@ So, tasks with a low scheduling class have a higher probability of being evicted
 
 
 ### Question 5 
+With a threshold of 65%, we can affirm that tasks from the same job run on the same machine in general.
+
+| Where it run      | Percentage    |
+|-------------------|---------------|
+| Same Machine      | 73.34 %       |
+| Different Machine | 26.66 %       |
+
+### Question 6
+
 
 ### Author:
 - Romain Alves

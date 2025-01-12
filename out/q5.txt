@@ -1,0 +1,8 @@
+Question 5 :
+In general, do tasks from the same job run on the same machine?
+Loading task_events
+Proportion of jobs running on a single machine: 73.34%
+Proportion of jobs running on multiple machines: 26.66%
+It is True that in general, tasks from the same job run on the same machine
+
+Execution Time : 43.41 s

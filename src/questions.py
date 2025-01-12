@@ -362,7 +362,7 @@ def question5(data, cols):
     # In general, do tasks from the same job run on the same machine?
     # We could interpret "In general" in different ways.
     # We choose to give a threshold, here 75%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively.
-    threshold = 75 # value in percent
+    threshold = 65 # value in percent
 
     index_jobID = cols.index('jobID')
     index_machineID = cols.index('machineID')
