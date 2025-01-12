@@ -2,25 +2,43 @@
 # Spark Project M2 MOSIG
 
 ## How to run the project
-We assume that you have already installed Spark and that you have a working version of Python 3.10 or higher.
+To download the dataset, you need to run the following command **in the root directory of the project**:
+```bash
+    gsutil -m cp gs://clusterdata-2011-2/machine_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/job_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/task_events/ ./data/
+    gsutil -m cp gs://clusterdata-2011-2/task_usage/ ./data/
+```
+This will download the dataset in the `data` directory. To un compress the files, you need to run the following command **in the root directory of the project**:
+```bash
+    gunzip ./data/machine_events/*
+    gunzip ./data/job_events/*
+    gunzip ./data/task_events/*
+    gunzip ./data/task_usage/*
+```
+
+We assume that you have already installed Spark, matplotlib and that you have a working version of Python 3.10 or higher.
 to run all the questions of the project, you need to run the following commands **in the root directory of the project**:
 ```bash
     python3 ./src/main.py
 ```
-If you want to run with a filter on the missing values, you can run the following command:
+**It is possible for you to have issues with a "librairy src not found" :** To resolve it just uncomment the line 7 in the file `src/main.py` and run again the same way as before.
+
+If you want to run with more annotation and more information, you can run the following command:
 ```bash
-    python3 ./src/main.py filtered
+    python3 ./src/main.py check
 ```
 If you want to run a specific question, you can run the following command:
 ```bash
     python3 ./src/main.py <questions_number>
 ```
 where `<questions_number>` are the number of the questions you want to run (1, 2, etc. separated by a space).
-And you can obviously add the `filtered` argument and mix the arguments.
+
+And you can obviously add the `check` argument and mix the arguments.
 
 Example:
 ```bash
-    python3 ./src/main.py 1 2 filtered
+    python3 ./src/main.py 1 2 check
 ```
 
 ## Description of the data
@@ -28,47 +46,73 @@ Example:
 ### machine_events
 There is only one file in the `machine_events` directory. This file contains the following columns:
 
-| Column | Title           | Type        | Mandatory | Description                                                                                   |
-|--------|-----------------|-------------|-----------|-----------------------------------------------------------------------------------------------|
-| 1      | Timestamp       | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.         |
-| 2      | Machine ID      | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                  |
-| 3      | Event Type      | INTEGER     | YES       | Type d'événement : <br>0: ADD (ajout) <br>1: REMOVE (suppression) <br>2: UPDATE (mise à jour) |
-| 4      | Platform ID     | STRING_HASH | NO        | Identifiant haché de la plateforme, correspondant à la microarchitecture et au chipset.       |
-| 5      | CPU Capacity    | FLOAT       | NO        | Capacité normalisée du CPU de la machine (1.0 représente la capacité maximale).               |
-| 6      | Memory Capacity | FLOAT       | NO        | Capacité normalisée de la mémoire de la machine (1.0 représente la capacité maximale).        |
+| Column | Title           | Type        | Mandatory |
+|--------|-----------------|-------------|-----------|
+| 1      | Timestamp       | INTEGER     | YES       |
+| 2      | Machine ID      | INTEGER     | YES       |
+| 3      | Event Type      | INTEGER     | YES       |
+| 4      | Platform ID     | STRING_HASH | NO        |
+| 5      | CPU Capacity    | FLOAT       | NO        |
+| 6      | Memory Capacity | FLOAT       | NO        |
 
 ### job_events
 There are 500 files in the `job_events` directory. Each file contains the following columns:
 
-| Column | Title            | Type        | Mandatory | Description                                                                                                                                                       |
-|--------|------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Timestamp        | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             |
-| 2      | Missing Info     | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |
-| 3      | Job ID           | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         |
-| 4      | Event Type       | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) |
-| 5      | User             | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         |
-| 6      | Scheduling Class | INTEGER     | NO        | Classe de planification de l'emploi : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       |
-| 7      | Job Name         | STRING_HASH | NO        | Nom de l'emploi.                                                                                                                                                  |
-| 8      | Logical Job Name | STRING_HASH | NO        | Nom logique de l'emploi.                                                                                                                                          |
+| Column | Title            | Type        | Mandatory |
+|--------|------------------|-------------|-----------|
+| 1      | Timestamp        | INTEGER     | YES       |
+| 2      | Missing Info     | INTEGER     | YES       |
+| 3      | Job ID           | INTEGER     | YES       |
+| 4      | Event Type       | INTEGER     | YES       |
+| 5      | User             | STRING_HASH | NO        |
+| 6      | Scheduling Class | INTEGER     | NO        |
+| 7      | Job Name         | STRING_HASH | NO        |
+| 8      | Logical Job Name | STRING_HASH | NO        |
 
 ### task_events
 There are 500 files in the `task_events` directory. Each file contains the following columns:
 
-| Column | Title             | Type        | Mandatory | Description                                                                                                                                                       |
-|--------|-------------------|-------------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 1      | Timestamp         | INTEGER     | YES       | Temps de l'événement en microsecondes depuis 600 secondes avant le début de la trace.                                                                             |
-| 2      | Missing Info      | INTEGER     | YES       | Indique si certaines informations sont manquantes dans l'événement : <br>0: non manquant <br>1                                                                    |
-| 3      | Job ID            | INTEGER     | YES       | Identifiant unique de l'emploi impliqué dans l'événement.                                                                                                         |
-| 4      | Task Index        | INTEGER     | YES       | Index de la tâche dans l'emploi.                                                                                                                                  |
-| 5      | Machine ID        | INTEGER     | YES       | Identifiant unique de la machine impliquée dans l'événement.                                                                                                      |
-| 6      | Event Type        | INTEGER     | YES       | Type d'événement : <br>0: SUBMIT (soumission) <br>1: SCHEDULE (planification) <br>2: EVICT (éviction) <br>3: FAIL (échec) <br>4: FINISH (fin) <br>5: KILL (arrêt) |
-| 7      | User              | STRING_HASH | NO        | Identifiant haché de l'utilisateur qui a soumis l'emploi.                                                                                                         |
-| 8      | Scheduling Class  | INTEGER     | NO        | Classe de planification de la tâche : <br>0: non défini <br>1: normale <br>2: best effort <br>3: background                                                       |
-| 9      | Priority          | INTEGER     | NO        | Priorité de la tâche.                                                                                                                                             |
-| 10     | CPU Request       | FLOAT       | NO        | Nombre de cœurs de CPU demandés par la tâche.                                                                                                                     |
-| 11     | Memory Request    | FLOAT       | NO        | Quantité de mémoire demandée par la tâche.                                                                                                                        |
-| 12     | Disk Request      | FLOAT       | NO        | Quantité de disque demandée par la tâche.                                                                                                                         |
-| 13     | Different Machine | INTEGER     | NO        | Indique si la tâche doit être exécutée sur une machine différente de celle où elle a été soumise : <br>0: non <br>1: oui                                          |
+| Column | Title             | Type        | Mandatory |
+|--------|-------------------|-------------|-----------|
+| 1      | Timestamp         | INTEGER     | YES       |
+| 2      | Missing Info      | INTEGER     | YES       |
+| 3      | Job ID            | INTEGER     | YES       |
+| 4      | Task Index        | INTEGER     | YES       |
+| 5      | Machine ID        | INTEGER     | YES       |
+| 6      | Event Type        | INTEGER     | YES       |
+| 7      | User              | STRING_HASH | NO        |
+| 8      | Scheduling Class  | INTEGER     | NO        |
+| 9      | Priority          | INTEGER     | NO        |
+| 10     | CPU Request       | FLOAT       | NO        |
+| 11     | Memory Request    | FLOAT       | NO        |
+| 12     | Disk Request      | FLOAT       | NO        |
+| 13     | Different Machine | INTEGER     | NO        |
+
+### task_usage
+There are 500 files in the `task_usage` directory. Each file contains the following columns:
+
+| Column | Title                         | Type    | Mandatory |
+|--------|-------------------------------|---------|-----------|
+| 1      | Start Time                    | INTEGER | YES       |
+| 2      | End Time                      | INTEGER | YES       |
+| 3      | Job ID                        | INTEGER | YES       |
+| 4      | Task Index                    | INTEGER | YES       |
+| 5      | Machine ID                    | INTEGER | YES       |
+| 6      | CPU Rate                      | FLOAT   | NO        |
+| 7      | Canonical Memory              | FLOAT   | NO        |
+| 8      | Assigned Memory               | FLOAT   | NO        |
+| 9      | Unmapped Page Cache           | FLOAT   | NO        |
+| 10     | Total Page Cache              | FLOAT   | NO        |
+| 11     | Maximum Memory                | FLOAT   | NO        |
+| 12     | Disk I/O Time                 | FLOAT   | NO        |
+| 13     | Local Disk Space              | FLOAT   | NO        |
+| 14     | Maximum CPU Rate              | FLOAT   | NO        |
+| 15     | Maximum Disk IO Time          | FLOAT   | NO        |
+| 16     | Cycle Per Instruction         | FLOAT   | NO        |
+| 17     | Memory Access Per Instruction | FLOAT   | NO        |
+| 18     | Sample Portion                | FLOAT   | NO        |
+| 19     | Aggregation Type              | BOOL    | NO        |
+| 20     | Sampled CPU Usage             | FLOAT   | NO        |
 
 ## Description of the analyses
 
@@ -135,15 +179,49 @@ For this question :
 
 ### Question 5 : In general, do tasks from the same job run on the same machine?
 First, we want to fix the meaning behind "In general" that we are going to use for this question. 
-We choose to give a threshold, here 75%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively. We can modify *threshold* in the code.
+We choose to give a threshold, here 65%, were if there is more than *threshold* jobs that run on the same machine we can answer the question affirmatively. We can modify *threshold* in the code.
     
 On task_events, after removing the missing data : 
 - We make a key-value pair (jobID, machineID)
 - We remove the duplicates, meaning we keep only one instance when a jobID is on the same machine several times 
 - We group the values by keys, i.e. by jobID. The result is that each job is associated with a 'list' of different machines.
 - We count the length of the machines for each job. If the length is greater than one, then tasks from this job don't run on all on the same machine. 
-- Finally we count the number of jobs that satisfy this property and we give our answer. 
+- Finally, we count the number of jobs that satisfy this property, and we give our answer. 
 
+### Question 6 : Are the tasks that request the more resources the one that consume the more resources?
+For this question, we had a lot of trouble.
+- The dataset is HUGE, and we can't load it all in memory.
+- We tried to use the `sample` function to reduce the size of the dataset, but it was not enough.
+- We also tried to use the `take` function to take only a few rows, but it was not enough either.
+
+So, after 2 days trying to solve the question on our computer,
+We moved the project on Google cloud platform to create a VM with 64GB of RAM.
+We never use it before so we had to learn, and it takes us a lot of time to understand how to use it (a full day).
+
+We leaned in our M1 Info Data Base course to filter as much and as soon as possible the data before starting the computation to reduce the size of the dataset. Which implies that we reduce the time of computation.
+- So we filtered the data of the first table to keep only the rows :
+  - JobID, Task Index, CPU Request, Memory Request, Disk Request and with the CPU Request, Memory Request, Disk Request not empty.
+- We then filtered the data of the second table to keep only the rows :
+  - JobID, Task Index, CPU Max, Memory Max, Disk Max also with the CPU Max, Memory Max, Disk Max not empty.
+- We then mapped the data as a key-value pair :
+  - Where the key is the (JobID, Task Index)
+  - The value is the tuple (CPU Request, Memory Request, Disk Request)
+  - Same for the second table with the CPU Max, Memory Max, Disk Max
+- After that, we reduced the data from the two tables to keep only the maximum of the values for each key.
+  - We do that because we want to compare the maximum of the request with the maximum of the usage. To know at what point the request is in adequacy with the maximum usage.
+- We then joined the two tables on the key (JobID, Task Index).
+- We then mapped the data as pairs of (CPU Request, CPU Max), (Memory Request, Memory Max), (Disk Request, Disk Max).
+- For each pair, : we compute the correlation between the two values.
+
+![Correlation](./img/correlation.png)
+
+- Finally, we print the correlation (in percentage) between the CPU Request and the CPU Max, the Memory Request and the Memory Max, the Disk Request and the Disk Max.
+#### How to interpret the correlation?
+- The correlation coefficient r is a unitless value between -1 and 1.
+- The closer r is to zero, the weaker the linear relationship.
+- Positive values of r indicate a positive correlation when the values of the two variables tend to increase together.
+- Negative values of r indicate a negative correlation when the values of one variable tend to increase and the values of the other variable decrease.
+- The values 1 and -1 each represent ‘perfect’ correlations, positive and negative respectively. Two variables with a perfect correlation move together at a fixed speed. The relationship is said to be linear; plotted in a scatter plot, all the data points can be connected by a straight line.
 
 ## Results
 
@@ -199,6 +277,42 @@ So, tasks with a low scheduling class have a higher probability of being evicted
 
 
 ### Question 5 
+With a threshold of 65%, we can affirm that tasks from the same job run on the same machine in general.
+
+| Where it run      | Percentage    |
+|-------------------|---------------|
+| Same Machine      | 73.34 %       |
+| Different Machine | 26.66 %       |
+
+### Question 6
+With a threshold of 80%, we can affirm that tasks that request the more resources are not always the one that consumes the more resources.
+
+We can notice that there is a small positive correlation between the request and the maximum usage for the memory. But for the CPU and the Disk, there is no clear positive correlation.
+
+We obtained the following correlation between the request and the maximum usage:
+
+| Data   | Correlation en % |
+|--------|------------------|
+| CPU    | 22.68            |
+| Memory | 60.28            |
+| Disk   | 1.65             |
+
+### Table of the execution time
+| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1 | Custom 2 | Total     |
+|----------------|------|------|----------------|--------------------|----------------|--------------------|----------|----------|-----------|
+| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    |          |          | ~ 3h 5min |
+
+
+### Problems encountered
+- The dataset is HUGE, and we can't load it all in memory. (2 days of work to decide to move the project on Google cloud platform)
+- Google cloud platform is not easy to use when you never used it before. (1 day of work to understand how to use it)
+  - To be honest we had :
+    - Problem to understand how to access to the service because there is so many random message everywhere.
+    - Problem to understand that we need to create a VM to use the service. And not install the project on the session.
+    - Problem of disk space because it is 40GB when it is compressed and 200GB when it is uncompressed. So i uninstall the project and reinstall it on a bigger disk added manually (4 hours).
+    - Problem Google cloud is so slow to download and uncompress the dataset. (6 hours)
+    - Problem to reconnect to the VM : when I write these lines, I am trying to reconnect to the VM for 2 hours. I just wanted to be sure that I've download clusterdata-2011-2 and not clusterdata-2011-1.
+      - So the result of the Q6 is maybe not the good one because I can't check it.
 
 ### Author:
 - Romain Alves

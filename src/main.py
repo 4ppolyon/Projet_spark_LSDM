@@ -1,6 +1,13 @@
 from pyspark import SparkContext, SparkConf, RDD
 import matplotlib.pyplot as plt
-from src.questions import *
+import sys
+import os
+
+# Si vous avez un message d'erreur vous disant que la library src n'existe pas, décommentez la ligne suivante :
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Importer les modules
+from src.questions import *  # Ne pas inclure "src." ici
 
 # Create a Spark Context
 conf = (
@@ -181,8 +188,8 @@ def q6():
     data = load_data("task_events")
     # data = load_data("task_events","part-00000-of-00500")
     print("Loading task_usage")
-    # data_usage = load_data("task_usage")
-    data_usage = load_data("task_usage","part-000??-of-00500")
+    data_usage = load_data("task_usage")
+    # data_usage = load_data("task_usage","part-000??-of-00500")
     question6(data, data_usage, task_event_col, task_usage_col)
     print("\nExecution Time :", round(time.time() - start, 2), "s\n")
 
