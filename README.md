@@ -216,12 +216,35 @@ We leaned in our M1 Info Data Base course to filter as much and as soon as possi
 ![Correlation](./img/correlation.png)
 
 - Finally, we print the correlation (in percentage) between the CPU Request and the CPU Max, the Memory Request and the Memory Max, the Disk Request and the Disk Max.
+- 
 #### How to interpret the correlation?
 - The correlation coefficient r is a unitless value between -1 and 1.
 - The closer r is to zero, the weaker the linear relationship.
 - Positive values of r indicate a positive correlation when the values of the two variables tend to increase together.
 - Negative values of r indicate a negative correlation when the values of one variable tend to increase and the values of the other variable decrease.
 - The values 1 and -1 each represent ‘perfect’ correlations, positive and negative respectively. Two variables with a perfect correlation move together at a fixed speed. The relationship is said to be linear; plotted in a scatter plot, all the data points can be connected by a straight line.
+
+### Custom 1 : Wich machine has the the highest/lowest ratio failure/task?
+
+First, we talk about the task executed by the machine.
+- We filter the data to keep only the rows where the machineID, the jobID, and the task index are not empty.
+  - We then map the data as key (MachineID, JobID, Task Index) and value 1.
+  - We distinct to have only one instance of each task executed by the machine.
+  - We then count the number of tasks executed by each machine.
+
+After that, we talk about the failure of the machine.
+- We reuse the data filtered before.
+  - We filter the data to keep only the rows where the event type is 2.
+  - We then map the data as key (MachineID, JobID, Task Index) and value 1.
+  - We then reduce the data by summing the values for each key. This way we can count the number of failures for each machine.
+  - We then join the two tables on the key (MachineID, JobID, Task Index). Precisely we did a left outer join to keep all the tasks executed and add the failure count.
+  - We then fill the missing values with 0.
+  - We then map the data to transform the failure count into a failure ratio
+
+We sort the data by the failure ratio and we print the machine with the highest and the lowest ratio failure/task.
+
+Finally, we compute the ratio failure/task for each machine and we print the machine with the highest and the lowest ratio failure/task.
+- 
 
 ## Results
 
@@ -297,13 +320,28 @@ We obtained the following correlation between the request and the maximum usage:
 | Memory | 60.28            |
 | Disk   | 1.65             |
 
-### Table of the execution time
-| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1 | Custom 2 | Total     |
-|----------------|------|------|----------------|--------------------|----------------|--------------------|----------|----------|-----------|
-| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    |          |          | ~ 3h 5min |
+### Custom 1
+We obtain a surprising result for the machine with the highest ratio failure/task.
+- The machine with the highest ratio failure/task is the machine with the machineID 1436489701 with a ratio of 2.676.
+  - We can see that as a machine who restarted some tasks because it's not possible to have more failures than tasks.
+  - An upgrade point can be to determine the number of tasks that have been restarted by the machine. Or the total number of tasks that have started + restarted to have the real ratio.
+- The machine with the lowest ratio failure/task is the machine with the machineID 1436491597 with a ratio of 0.000.
+  - We can see a lot of machines with a ratio of 0.000. It means that they have no failure in the filtered data that we used.
+
+#### Here the top 5 of the highest ratio failure/task :
+1. 1436489701 : 2.67647
+2. 317330964 : 0.95699
+3. 4246147567 : 0.8826
+4. 288814348 : 0.76471
+5. 5068065359 : 0.75
+
+## Table of the execution time
+| Question       | 1    | 2    | 3              | 4                  | 5              | 6                  | Custom 1         | Custom 2 | Total      |
+|----------------|------|------|----------------|--------------------|----------------|--------------------|------------------|----------|------------|
+| Execution time | 0s   | 0s   | 49s ( < 1min ) | 73s ( < 1min 30s ) | 43s ( < 1min ) | 10336s ( ~ 3h )    | 89s (~ 1min 30s) |          | ~ 3h 10min |
 
 
-### Problems encountered
+## Problems encountered
 - The dataset is HUGE, and we can't load it all in memory. (2 days of work to decide to move the project on Google cloud platform)
 - Google cloud platform is not easy to use when you never used it before. (1 day of work to understand how to use it)
   - To be honest we had :
